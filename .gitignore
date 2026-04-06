@@ -576,3 +576,16 @@ dmypy.json
 
 # Ad hoc reproduce logs (separate from reproduce/benchmarks/logs/)
 reproduce/logs/
+
+# --- Public course repo: omit convenience PDFs and generated snippets (2026-04) ---
+# Regenerate with latexmk / reproduce scripts; keeps clone smaller and diffs cleaner.
+/HAFiscal.pdf
+/HAFiscal-Slides.pdf
+Subfiles/*.pdf
+/Cagetti2005tk-Abstract.txt
+/HAFiscal-Abstract.txt
+# Duplicate MyST copies of root sources (canonical: Cagetti2005tk.tex / .bib at repo root)
+/Cagetti2005tk_material/Cagetti2005tk.tex
+/Cagetti2005tk_material/Cagetti2005tk.bib
+# Third-party full article text and extracted figures (copyright — keep locally only)
+/Cagetti2005tk_material/source/Entrepreneurship, Frictions, and Wealth/
