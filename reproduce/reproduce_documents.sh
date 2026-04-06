@@ -142,8 +142,8 @@ cleanup_auxiliary_files() {
 # Function to resolve document target to file path
 resolve_document() {
     case "$1" in
-        "main") echo "HAFiscal.tex" ;;
-        "slides") echo "HAFiscal-Slides.tex" ;;
+        "main") echo "Cagetti2005tk.tex" ;;
+        "slides") echo "Cagetti2005tk-Slides.tex" ;;
         "appendix-hank") echo "Subfiles/Appendix-HANK.tex" ;;
         "appendix-nosplurge") echo "Subfiles/Appendix-NoSplurge.tex" ;;
         *) echo "$1" ;;  # Return as-is for direct file paths
@@ -152,8 +152,8 @@ resolve_document() {
 
 list_documents() {
     echo "Available document targets:"
-    echo "  main -> HAFiscal.tex"
-    echo "  slides -> HAFiscal-Slides.tex"
+    echo "  main -> Cagetti2005tk.tex"
+    echo "  slides -> Cagetti2005tk-Slides.tex"
     echo "  appendix-hank -> Subfiles/Appendix-HANK.tex"
     echo "  appendix-nosplurge -> Subfiles/Appendix-NoSplurge.tex"
 }
@@ -388,8 +388,8 @@ validate_environment() {
             log_error "Tried PATH: $PATH"
             return 1
         fi
-        if [[ ! -f "HAFiscal.tex" ]]; then
-            log_error "HAFiscal.tex not found - run from project root directory"
+        if [[ ! -f "Cagetti2005tk.tex" ]]; then
+            log_error "Cagetti2005tk.tex not found - run from project root directory"
             return 1
         fi
         log_success "Environment validation completed (minimal checks)"
@@ -436,8 +436,8 @@ validate_environment() {
         return 1
     fi
     
-    if [[ ! -f "HAFiscal.tex" ]]; then
-        log_error "HAFiscal.tex not found - run from project root directory"
+    if [[ ! -f "Cagetti2005tk.tex" ]]; then
+        log_error "Cagetti2005tk.tex not found - run from project root directory"
         return 1
     fi
     
@@ -846,7 +846,7 @@ main() {
     setup_build_environment
     
     # Detect repository type for draft mode handling
-    if [[ -f "HAFiscal.tex" ]]; then
+    if [[ -f "Cagetti2005tk.tex" ]]; then
         REPO_TYPE="QE"
         if [[ "$VERBOSE" == "true" ]]; then
             log_info "Repository type: QE"

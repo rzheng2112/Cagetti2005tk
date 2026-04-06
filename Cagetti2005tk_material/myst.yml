@@ -1,0 +1,25 @@
+version: 1
+project:
+  title: "Entrepreneurship, Frictions, and Wealth — Ballpark Entry"
+  authors:
+    - name: "Cagetti and De Nardi (2005)"
+  bibliography:
+    - self.bib
+    - references.bib
+    - subsequent-literature.bib
+  toc:
+    - file: Cagetti2005-tk_intro.ipynb
+    - file: Cagetti2005-tk_prior-literature.ipynb
+    - file: Cagetti2005-tk_summary.ipynb
+    - file: Cagetti2005-tk_subsequent-literature.ipynb
+  exports:
+    - format: pdf
+      template: plain_latex_book
+      articles:
+        - Cagetti2005-tk_intro.ipynb
+        - Cagetti2005-tk_prior-literature.ipynb
+        - Cagetti2005-tk_summary.ipynb
+        - Cagetti2005-tk_subsequent-literature.ipynb
+      output: exports/Cagetti2005-tk.pdf
+site:
+  title: "Entrepreneurship, Frictions, and Wealth — Ballpark Entry"

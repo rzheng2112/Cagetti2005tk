@@ -495,7 +495,8 @@ reproduce/reproduce_environment_*.verified
 
 # All verification marker files (global pattern)
 *.verified
-# Editor cache\n.cursorignore\n.cursorindexingignore\n# Local devcontainer artifacts\n.devcontainer/.specstory/
+# Editor cache; .cursorignore / .cursorindexingignore; local devcontainer artifacts
+# .devcontainer/.specstory/
 .specstory/
 *pathtmp
 # Python/Jupyter object cache files (Jacobian matrices)
@@ -556,3 +557,22 @@ tmp/
 .zenodo_token
 */.zenodo_token
 private-dev/zenodo/.zenodo_token
+
+# --- Python / Jupyter / packaging (supplement; 2026-04) ---
+.eggs/
+*.egg-info/
+*.egg
+MANIFEST
+build/
+htmlcov/
+.ruff_cache/
+.pytype/
+.dmypy.json
+dmypy.json
+.pyre/
+
+# LaTeXmk / subfiles dependency tracking (rebuilt from sources)
+*.dep
+
+# Ad hoc reproduce logs (separate from reproduce/benchmarks/logs/)
+reproduce/logs/
