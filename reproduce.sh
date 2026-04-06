@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# HAFiscal Reproduction Script
-# This script provides options for reproducing different aspects of the HAFiscal project
+# Cagetti2005tk reproduction script
+# Derived from the HAFiscal/Econ-ARK workflow; see README.md for project scope.
 
 set -eo pipefail
 
@@ -94,7 +94,7 @@ init_logging() {
     
     # Write initial log entries
     log INFO "==================================="
-    log INFO "HAFiscal Reproduction Script Started"
+    log INFO "Cagetti2005tk reproduction script started"
     log INFO "Command: $0 $*"
     log INFO "Working directory: $(pwd)"
     log INFO "Log file: $LOG_FILE"
@@ -647,9 +647,9 @@ trap 'exit_code=$?; print_summary $exit_code; cleanup_temp_files; benchmark_end 
 
 show_help() {
     cat << EOF
-HAFiscal Reproduction Script
+Cagetti2005tk reproduction script
 
-This script provides multiple reproduction options and includes environment testing.
+This script provides multiple reproduction options and includes environment testing (inherited from the upstream HAFiscal-style toolchain).
 
 USAGE:
     ./reproduce.sh [OPTION]
@@ -668,7 +668,7 @@ OPTIONS:
                          full: all computational results needed for the printed document (4-5 days on a high-end 2025 laptop)
                          max: full results + robustness (Step 3: Splurge=0 for Online Appendix) (~6 days on a high-end 2025 laptop)
     --docs, -d [SCOPE]  Reproduce LaTeX documents (SCOPE: main|all|figures|tables|subfiles, default: main)
-                         main: only the paper --- HAFiscal.tex
+                         main: only the main paper --- Cagetti2005tk.tex (see reproduce/reproduce_documents.sh)
                          all: the paper + individual Figures/ + Tables/ + Subfiles/
                          figures: the paper + Figures/
                          tables: the paper + Tables/
@@ -747,7 +747,7 @@ EOF
 
 show_interactive_menu() {
     echo "========================================"
-    echo "   HAFiscal Reproduction Options"
+    echo "   Cagetti2005tk reproduction options"
     echo "========================================"
     echo ""
     echo "Please select what you would like to reproduce:"
@@ -1117,7 +1117,7 @@ test_environment_comprehensive() {
     
     log PROGRESS "Starting environment testing (scope: $scope)"
     log INFO "========================================"
-    log INFO "Testing HAFiscal Environment Setup"
+    log INFO "Testing environment setup (TeX Live / Python)"
     log INFO "========================================"
     echo ""
     
@@ -1334,7 +1334,7 @@ test_environment_comprehensive() {
             echo ""
         fi
         
-        echo "Your system is ready to reproduce HAFiscal results!"
+        echo "Your system is ready to run this repository's reproduction scripts."
         echo ""
         echo "Next steps:"
         echo "  ./reproduce.sh --docs      # Compile documents"
@@ -2442,7 +2442,7 @@ case "$ACTION" in
     "")
         # No arguments provided - show helpful examples (no logging for this)
         echo "========================================"
-        echo "HAFiscal Reproduction Script"
+        echo "Cagetti2005tk reproduction script"
         echo "========================================"
         echo ""
         echo "Run with arguments to reproduce different parts of the project."

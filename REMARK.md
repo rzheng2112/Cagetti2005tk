@@ -1,22 +1,25 @@
 ---
-# This is metadata for indexing HAFiscal as a 'REMARK'
-# in the https://github.com/econ-ark.org project
-github_repo_url: https://github.com/econ-ark/HAFiscal
-remark-name: HAFiscal # required
-notebooks: # path to any notebooks within the repo - optional
-  - HANK-and-SAM-tutorial.ipynb
-dashboards: # path to any dashboards (Voila) within the repo - optional
+# REMARK-style metadata (Econ-ARK ecosystem). This does not assert official listing on econ-ark.org.
+github_repo_url: https://github.com/rzheng2112/Cagetti2005tk
+remark-name: Cagetti2005tk
+notebooks:
+  - Cagetti2005tk_material/Cagetti2005-tk_intro.ipynb
+  - Cagetti2005tk_material/Cagetti2005-tk_prior-literature.ipynb
+  - Cagetti2005tk_material/Cagetti2005-tk_summary.ipynb
+  - Cagetti2005tk_material/Cagetti2005-tk_subsequent-literature.ipynb
+  - Cagetti2005tk_material/Cagetti2005-tk_bellman-stages.ipynb
+dashboards:
   - dashboard/app.ipynb
-tags: # Use the relevant tags
+tags:
   - REMARK
   - Notebook
   - Reproduction
-keywords: # optional
-  - Consumption
-  - Stimulus
-  - Fiscal Policy
-  - Welfare
+keywords:
+  - Entrepreneurship
+  - Wealth
+  - Occupational choice
+  - Heterogeneous agents
 ---
-# Welfare and Spending Effects of Consumption Stimulus Policies
+# Cagetti2005tk
 
-This repository is a complete software archive for the paper "Welfare and Spending Effects of Consumption Stimulus Policies" by Carroll, Crawley, Du, Frankovic, and Tretvoll (2025).
+Course-project materials for **Cagetti and De Nardi (2006)**, *Entrepreneurship, Frictions, and Wealth* (*Journal of Political Economy*). This repository provides LaTeX sources, Jupyter notebooks, and scripts aligned with the Econ-ARK / HAFiscal-style workflow used to build and explore the project.
