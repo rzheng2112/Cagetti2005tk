@@ -3,6 +3,10 @@
 github_repo_url: https://github.com/rzheng2112/Cagetti2005tk
 remark-name: Cagetti2005tk
 notebooks:
+  # Primary reproduction artifact: theory-model reproduction (Bellman system,
+  # calibrated parameters, fixed price environment). Executed by reproduce_min.sh.
+  - Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
+  # Narrative companions to the paper (not reproduction artifacts):
   - Cagetti2005tk_material/Cagetti2005-tk_intro.ipynb
   - Cagetti2005tk_material/Cagetti2005-tk_prior-literature.ipynb
   - Cagetti2005tk_material/Cagetti2005-tk_summary.ipynb

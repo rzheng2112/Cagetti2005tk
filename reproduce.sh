@@ -649,7 +649,20 @@ show_help() {
     cat << EOF
 Cagetti2005tk reproduction script
 
-This script provides multiple reproduction options and includes environment testing (inherited from the upstream HAFiscal-style toolchain).
+This script is inherited from the upstream HAFiscal-style toolchain.
+For the Cagetti2005tk REMARK, the supported reproduction paths are:
+
+    ./reproduce_min.sh         Executes the theory-model notebook
+                               Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
+                               (~90 seconds). This is the supported minimal
+                               computational reproduction for this REMARK.
+
+    ./reproduce.sh --docs main Builds the main LaTeX write-up Cagetti2005tk.pdf.
+
+The --comp and --data flags below are HAFiscal-inherited and DO NOT
+produce Cagetti2005tk results; they are retained only so the inherited
+tooling keeps working. Use ./reproduce_min.sh for the Cagetti minimal
+reproduction.
 
 USAGE:
     ./reproduce.sh [OPTION]
@@ -657,13 +670,16 @@ USAGE:
 OPTIONS:
     --help, -h          Show this help message
     --envt, -e          Test environment setup (TeX Live + Python/computational)
-    --data [SCOPE]      Reproduce empirical data or figures from results
+    --data [SCOPE]      [HAFiscal-inherited; not a Cagetti2005tk reproduction]
+                         Reproduce empirical data or figures from results
                          SCOPE: scf|IMPC|LP|all (default: scf)
                          scf: empirical data moments from SCF 2004 (~1 minute + download time)
                          IMPC: Intertemporal MPC figures from pre-computed results
                          LP: Lorenz Points figures from pre-computed results
                          all: all figures from results (IMPC + LP)
-    --comp, -c [SCOPE]  Reproduce computational results (SCOPE: min|full|max, default: min)
+    --comp, -c [SCOPE]  [HAFiscal-inherited; not a Cagetti2005tk reproduction.
+                          For Cagetti2005tk, use ./reproduce_min.sh instead.]
+                         Reproduce computational results (SCOPE: min|full|max, default: min)
                          min: minimal computational results (~1 hour)
                          full: all computational results needed for the printed document (4-5 days on a high-end 2025 laptop)
                          max: full results + robustness (Step 3: Splurge=0 for Online Appendix) (~6 days on a high-end 2025 laptop)
@@ -716,6 +732,9 @@ ENVIRONMENT VARIABLES:
                          BENCHMARK=true ./reproduce.sh --comp min # Enable (default)
 
 EXAMPLES:
+    ./reproduce_min.sh                       # Cagetti2005tk minimal computational reproduction
+                                             #   (executes cagetti2005_theory_reproduction.ipynb, ~90s)
+    ./reproduce.sh --docs main               # Cagetti2005tk LaTeX write-up (Cagetti2005tk.pdf)
     ./reproduce.sh                           # Show quick examples (this help)
     ./reproduce.sh --interactive             # Show interactive menu
     ./reproduce.sh --envt                    # Test both TeX Live and computational environments

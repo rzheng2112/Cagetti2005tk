@@ -41,26 +41,56 @@ The repository name follows the working-paper year, while the published article 
 
 ## How to run
 
-**Build the main PDF** from the repository root:
+### Minimal computational reproduction (~90 seconds)
+
+From the repository root:
+
+```bash
+./reproduce_min.sh
+```
+
+This executes the theory-model reproduction notebook
+
+```
+Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
+```
+
+which re-states the Cagetti and De Nardi (2006) household Bellman system (equations 2–14) and solves it at the paper's calibrated structural parameters in a fixed price environment, using the SolvingMicroDSOPs stage package. It is the supported minimal computational reproduction for this REMARK.
+
+The notebook imports `solution` and `stages.cons_noshocks` from `Code/Python/`. `reproduce_min.sh` checks that those files are present and exits with an explanatory error if they are not, so that a failed minimal reproduction is never silent.
+
+### Main LaTeX document
+
+To build `Cagetti2005tk.pdf`:
+
+```bash
+./reproduce.sh --docs main
+```
+
+Or, directly with a TeX toolchain from the repository root:
 
 ```bash
 pdflatex Cagetti2005tk.tex
-bibtex Cagetti2005tk
+bibtex   Cagetti2005tk
 pdflatex Cagetti2005tk.tex
 pdflatex Cagetti2005tk.tex
 ```
 
-If you use `latexmk` (for example via a `.latexmkrc`), you can compile with that instead.
+If you use `latexmk` (for example via the bundled `.latexmkrc`), you can compile with that instead.
 
-**Automation:** `./reproduce.sh --docs main` calls `reproduce/reproduce_documents.sh` to build the main document (`Cagetti2005tk.tex`) and optional scopes. See `reproduce/README.md` for flags. The script bundle inherits optional pipelines from the upstream HAFiscal workflow (for example, `--comp` and `--data`); use only what your course requires.
+### HAFiscal-inherited flags (not Cagetti2005tk reproductions)
 
-**Notebooks:** Open the notebooks under `Cagetti2005tk_material/` in Jupyter after activating your Python environment.
+`reproduce.sh` also exposes `--comp` and `--data` flags that are inherited from the upstream HAFiscal workflow. They do **not** produce Cagetti2005tk results and are retained only so the inherited tooling keeps working. For the Cagetti2005tk REMARK, use `./reproduce_min.sh` and `./reproduce.sh --docs main`.
+
+### Other notebooks
+
+The remaining notebooks under `Cagetti2005tk_material/` (intro, prior literature, summary, subsequent literature, Bellman-stages write-up) are narrative companions to the paper, not reproduction artifacts; they can be opened directly in Jupyter after activating your Python environment.
 
 ---
 
 ## Reproducibility notes
 
-PDFs and auxiliary outputs can be regenerated from the LaTeX and notebook sources. What is tracked in git follows this repository’s `.gitignore` and publishing choices. Large computational trees under `Code/` are separate from compiling `Cagetti2005tk.tex`.
+The REMARK-supported reproduction path is `./reproduce_min.sh` (theory-model notebook) plus `./reproduce.sh --docs main` (LaTeX write-up). PDFs and auxiliary outputs can be regenerated from these sources. What is tracked in git follows this repository's `.gitignore` and publishing choices. Large computational trees under `Code/HA-Models/` and `Code/Empirical/` are HAFiscal-inherited and separate from the Cagetti2005tk reproduction path.
 
 ---
 
