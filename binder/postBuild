@@ -1,6 +1,22 @@
 #!/bin/bash
+# Binder post-build hook for Cagetti2005tk.
+#
+# binder/environment.yml only bootstraps python + uv; the actual project
+# dependencies are installed here from the repo-root pyproject.toml /
+# uv.lock so the Binder session matches the locked local environment.
 
-# run matplotlib once to generate the font cache
+set -euo pipefail
+
+# Prime the matplotlib font cache so first-plot latency is hidden inside
+# the build instead of surprising the user at notebook runtime.
 python -c "import matplotlib as mpl; mpl.use('Agg'); import pylab as plt; fig, ax = plt.subplots(); fig.savefig('test.png')"
-
 test -e test.png && rm test.png
+
+# Install the locked project environment.
+if command -v uv >/dev/null 2>&1; then
+    echo "Installing locked project dependencies with uv sync --frozen --all-groups"
+    uv sync --frozen --all-groups
+else
+    echo "uv is not on PATH after conda env create; falling back to pip."
+    pip install -e .
+fi

@@ -1,17 +1,19 @@
-# HAFiscal is a research project, not an installable package
-# This pyproject.toml manages dependencies only (no build-system needed)
+# Cagetti2005tk is a research-reproduction project (Econ-ARK REMARK-in-progress),
+# not an installable package. This pyproject.toml manages dependencies only
+# (no build-system needed). Layout and build tooling are inherited from the
+# HAFiscal REMARK template; see NOTICES.md.
 
 [project]
-name = "hafiscal"
-version = "1.0.0"
-description = "HAFiscal: Household Fiscal Policy Model"
+name = "cagetti2005tk"
+version = "0.1.0"
+description = "REMARK: partial-equilibrium reproduction of Cagetti & De Nardi (2006), 'Entrepreneurship, Frictions, and Wealth'."
 requires-python = ">=3.9,<3.10"
 authors = [
-    {name = "Christopher D. Carroll", email = "ccarroll@llorracc.org"},
+    {name = "Rudan Zheng"},
 ]
 readme = "README.md"
 license = {text = "Apache-2.0"}
-keywords = ["economics", "computational", "fiscal-policy", "heterogeneous-agents"]
+keywords = ["economics", "computational", "entrepreneurship", "heterogeneous-agents", "wealth-distribution", "REMARK"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",

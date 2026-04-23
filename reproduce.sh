@@ -2459,46 +2459,62 @@ case "$ACTION" in
         fi
         ;;
     "")
-        # No arguments provided - show helpful examples (no logging for this)
-        echo "========================================"
-        echo "Cagetti2005tk reproduction script"
-        echo "========================================"
+        # REMARK standard: bare `./reproduce.sh` on a clean clone must
+        # execute the advertised reproduction end-to-end, not just print
+        # a help banner. For this project the advertised reproduction is:
+        #   (1) the theory-model notebook (reproduce_min.sh), which
+        #       produces the Figures/Cagetti2005tk and
+        #       Tables/Cagetti2005tk artifacts, plus
+        #   (2) the main LaTeX document (reproduce/reproduce_documents.sh
+        #       main), which consumes those artifacts.
+        # The HAFiscal-inherited --comp / --data actions remain available
+        # via explicit flags but are NOT Cagetti reproductions and are
+        # therefore NOT triggered by the bare invocation. See
+        # ./reproduce.sh --help for the full flag surface.
+        echo "================================================================="
+        echo "Cagetti2005tk reproduction (default: minimal + main document)"
+        echo "================================================================="
         echo ""
-        echo "Run with arguments to reproduce different parts of the project."
+        echo "No arguments provided. Running the advertised baseline"
+        echo "reproduction path:"
+        echo "  (1) ./reproduce_min.sh        -- execute theory notebook"
+        echo "  (2) reproduce/reproduce_documents.sh main  -- build paper"
         echo ""
-        echo "📖 QUICK EXAMPLES:"
+        echo "To see all available flags (--envt, --comp, --data, --docs,"
+        echo "--interactive), run:"
+        echo "    ./reproduce.sh --help"
         echo ""
-        echo "  # Environment testing:"
-        echo "  ./reproduce.sh --envt               # Test both environments"
-        echo "  ./reproduce.sh --envt texlive       # Test LaTeX only"
-        echo "  ./reproduce.sh --envt comp_uv       # Test Python/UV only"
+        echo "Logs are written to reproduce/logs/."
+        echo "-----------------------------------------------------------------"
         echo ""
-        echo "  # Empirical data:"
-        echo "  ./reproduce.sh --data               # SCF 2004 moments (~1 min)"
+
+        log INFO "Bare reproduce.sh: running reproduce_min.sh"
+        if ! "./reproduce_min.sh"; then
+            log ERROR "reproduce_min.sh failed"
+            exit 1
+        fi
+
+        if [[ -x reproduce/reproduce_documents.sh ]]; then
+            log INFO "Bare reproduce.sh: building main document"
+            if ! reproduce/reproduce_documents.sh main; then
+                log WARN "reproduce_documents.sh main failed; the computational"
+                log WARN "artifacts in Figures/Cagetti2005tk and"
+                log WARN "Tables/Cagetti2005tk are still valid. Re-run with"
+                log WARN "'./reproduce.sh --docs main' once the LaTeX toolchain"
+                log WARN "(TeX Live) is installed."
+            fi
+        else
+            log WARN "reproduce/reproduce_documents.sh not executable; skipping"
+            log WARN "document build. Run './reproduce.sh --docs main' manually."
+        fi
+
         echo ""
-        echo "  # Computational results:"
-        echo "  ./reproduce.sh --comp min           # Quick test (~1 hour)"
-        echo "  ./reproduce.sh --comp full          # Full results (4-5 days)"
-        echo ""
-        echo "  # LaTeX documents:"
-        echo "  ./reproduce.sh --docs main          # Compile paper only"
-        echo "  ./reproduce.sh --docs all           # Include figures, tables, subfiles"
-        echo ""
-        echo "  # Interactive mode:"
-        echo "  ./reproduce.sh --interactive        # Show menu (uses reproduce.py)"
-        echo "  ./reproduce.py                      # Python interactive menu (SST)"
-        echo ""
-        echo "  # Help:"
-        echo "  ./reproduce.sh --help               # Full documentation"
-        echo ""
-        echo "========================================"
-        echo ""
-        echo "💡 TIP: Start with './reproduce.sh --docs main' to test your LaTeX setup"
-        echo "        or './reproduce.sh --help' for complete documentation."
-        echo ""
-        echo "📝 NOTE: All commands are automatically logged to reproduce/logs/"
-        echo "         Monitor progress: tail -f reproduce/logs/latest.log"
-        echo ""
+        echo "================================================================="
+        echo "Reproduction complete. Inspect:"
+        echo "  Figures/Cagetti2005tk/    -- plots from the theory notebook"
+        echo "  Tables/Cagetti2005tk/     -- summary scalars"
+        echo "  Cagetti2005tk.pdf         -- compiled paper (if --docs ran)"
+        echo "================================================================="
         exit 0
         ;;
     *)

@@ -10,12 +10,12 @@
 # See README.md for migration instructions.
 # =============================================================================
 
-# Conda environment for HAFiscal project
+# Conda environment for Cagetti2005tk REMARK
 # Create environment: conda env create -f environment.yml
 # Update environment: conda env update -f environment.yml --prune
-# Activate: conda activate hafiscal
+# Activate: conda activate cagetti2005tk
 
-name: hafiscal
+name: cagetti2005tk
 channels:
   - conda-forge
   - defaults

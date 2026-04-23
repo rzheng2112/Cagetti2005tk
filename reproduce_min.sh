@@ -2,12 +2,17 @@
 # reproduce_min.sh - Minimal reproduction for the Cagetti2005tk REMARK.
 #
 # Supported minimal reproduction path:
-#   Execute the theory-model notebook
-#     Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
-#   which solves the Cagetti & De Nardi (2006) household Bellman system
-#   (eqs. 2-14) at the paper's calibrated parameters and a fixed price
-#   environment, using the SolvingMicroDSOPs stage package that lives
-#   under Code/Python/.
+#   1. Bootstrap a local Python environment from pyproject.toml / uv.lock
+#      (activates .venv if present; otherwise runs `uv sync --frozen`).
+#   2. Execute the theory-model notebook
+#        Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
+#      which solves the Cagetti & De Nardi (2006) household Bellman
+#      system (eqs. 2-14) at the paper's calibrated parameters and a
+#      fixed price environment, using the SolvingMicroDSOPs stage
+#      package vendored under Code/Python/.
+#   3. Run scripts/check_reproduction.py to assert a small set of
+#      numerical targets on the persisted summary table, so a silent
+#      regression fails the pipeline.
 #
 # This script does NOT run the HAFiscal-inherited --comp pipelines;
 # those are not Cagetti reproductions. For the main LaTeX document
@@ -20,6 +25,7 @@ cd "$REPO_ROOT"
 
 NOTEBOOK="Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb"
 CODE_PY="Code/Python"
+CHECK_SCRIPT="scripts/check_reproduction.py"
 
 echo "================================================================="
 echo "Cagetti2005tk minimal reproduction"
@@ -31,7 +37,8 @@ echo "       Journal of Political Economy, 114(5), 835-870."
 echo "       DOI: 10.1086/508032"
 echo ""
 echo "Artifact: $NOTEBOOK"
-echo "Expected runtime: ~90 seconds on a recent laptop."
+echo "Expected runtime: ~15 minutes on a recent laptop."
+echo "Persisted outputs: Figures/Cagetti2005tk/, Tables/Cagetti2005tk/"
 echo ""
 echo "For the LaTeX write-up, run: ./reproduce.sh --docs main"
 echo "================================================================="
@@ -55,18 +62,39 @@ if [[ ! -f "$CODE_PY/solution.py" || ! -f "$CODE_PY/stages/cons_noshocks.py" ]];
     echo "    $CODE_PY/solution.py"
     echo "    $CODE_PY/stages/cons_noshocks.py"
     echo ""
-    echo "These are the SolvingMicroDSOPs stage modules. Restore them"
-    echo "(e.g. by checking out the SolvingMicroDSOPs source into"
-    echo "\"$CODE_PY\") before re-running this script."
+    echo "These are the vendored SolvingMicroDSOPs stage modules. Refresh"
+    echo "them by running: ./scripts/revendor_smd.sh"
     exit 2
 fi
 
+# --- Environment bootstrap -------------------------------------------------
+# The REMARK standard expects `./reproduce_min.sh` to run from a clean
+# clone on a reviewer's machine, so we must not assume `jupyter` is
+# already on PATH. Preference order:
+#   1. If a project-local .venv already exists, activate it.
+#   2. Else, if `uv` is installed, sync the locked environment.
+#   3. Else, fall back to any `jupyter` already on PATH and tell the
+#      user what they need to install if there is none.
 if ! command -v jupyter >/dev/null 2>&1; then
-    echo "ERROR: 'jupyter' is not on PATH."
-    echo "Activate the project environment first (see README.md), e.g.:"
+    if [[ -f .venv/bin/activate ]]; then
+        echo "Activating existing .venv ..."
+        # shellcheck disable=SC1091
+        source .venv/bin/activate
+    elif command -v uv >/dev/null 2>&1; then
+        echo "No .venv found; running 'uv sync --frozen' to bootstrap ..."
+        uv sync --frozen
+        # shellcheck disable=SC1091
+        source .venv/bin/activate
+    fi
+fi
+
+if ! command -v jupyter >/dev/null 2>&1; then
+    echo "ERROR: 'jupyter' is not on PATH and could not be bootstrapped."
+    echo "Install 'uv' (https://docs.astral.sh/uv/) and re-run this script,"
+    echo "or manually create the environment:"
     echo "    uv sync && source .venv/bin/activate"
     echo "or:"
-    echo "    conda env create -f environment.yml && conda activate hafiscal"
+    echo "    conda env create -f environment.yml && conda activate cagetti2005tk"
     exit 3
 fi
 
@@ -77,8 +105,18 @@ jupyter nbconvert \
     --to notebook \
     --execute \
     --inplace \
-    --ExecutePreprocessor.timeout=600 \
+    --ExecutePreprocessor.timeout=1800 \
     "$NOTEBOOK"
+
+echo ""
+echo "-----------------------------------------------------------------"
+echo "Running numerical-target checks ..."
+echo "-----------------------------------------------------------------"
+if [[ -f "$CHECK_SCRIPT" ]]; then
+    python3 "$CHECK_SCRIPT"
+else
+    echo "WARN: $CHECK_SCRIPT not found; skipping post-run assertions."
+fi
 
 echo ""
 echo "================================================================="
@@ -87,6 +125,9 @@ echo "================================================================="
 echo "Refreshed: $NOTEBOOK"
 echo ""
 echo "Next steps:"
-echo "  - Open the notebook in Jupyter to inspect solved value functions,"
+echo "  - Inspect the persisted artifacts:"
+echo "      Figures/Cagetti2005tk/   (PDF + PNG plots)"
+echo "      Tables/Cagetti2005tk/    (summary.csv, counterfactuals.csv, ...)"
+echo "  - Open the notebook in Jupyter to explore value functions,"
 echo "    occupational branches, and the entrepreneur-share comparison."
 echo "  - Build the main document: ./reproduce.sh --docs main"
