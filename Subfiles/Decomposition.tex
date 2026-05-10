@@ -1,0 +1,49 @@
+\input{./._relpath-to-latexroot.ltx}
+\documentclass[\latexroot/\projectname]{subfiles}
+\input{\latexroot/@resources/subfile-setup.ltx}
+\begin{document}
+
+\section{Computational Decomposition}
+\whenintegrated{\label{sec:decomposition}}
+
+The purpose of the decomposition is not to introduce a new economic model. It is only a way to make the Cagetti and De Nardi household problem easier to solve and inspect in a notebook. The original model combines saving, occupational choice, entrepreneurial investment, borrowing constraints, survival, and bequests in one dynamic problem. I separate these objects into a small number of computational blocks so that each economic decision is visible.
+
+The beginning-of-period state is assets plus the relevant ability variables. For a young household the state is $(a,y,\theta)$. For an old entrepreneur it is $(a,\theta)$, and for an old retiree it is just $a$. The first important computational step is a branch comparison. Young households compare the worker value $V_w$ with the entrepreneur value $V_e$. Old entrepreneurs compare the continuing-business value $W_e$ with retirement value $W_r$. These comparisons are pointwise maxima on the state grid.
+
+The worker branch is closest to the standard consumption-saving problem. Given assets and labor income, the notebook builds worker cash-on-hand,
+\[
+  m^w=(1+r)a+(1-\tau)wy,
+\]
+and then solves the choice between consumption and next-period assets. The continuation value already contains the expected next-period worker and entrepreneur values, so this branch can focus on the one continuous saving decision.
+
+The entrepreneur branch is the key part of the reproduction because it adds business capital and the enforcement constraint. For each state, the notebook searches over candidate values of $k$. Each $k$ implies entrepreneurial resources
+\[
+  m^e=(1-\delta)k+\theta k^\nu-(1+r)(k-a).
+\]
+The notebook then solves the consumption-saving choice given $m^e$ and keeps only those $k$ choices for which honoring the debt is at least as valuable as default. In this way, the borrowing limit is not imposed as a fixed number; it is checked through the value functions themselves.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Notebook Decomposition of the Household Problem}
+  \whenintegrated{\label{tab:decomposition}}
+  \begin{tabular}{p{0.22\textwidth}p{0.34\textwidth}p{0.34\textwidth}}
+    \hline\hline
+    Block & Economic role & How it appears in the notebook \\
+    \hline
+    Beginning state & Carries assets and abilities into the period & Arrays over $a$, $y$, and $\theta$ for young households; arrays over $a$ and $\theta$ for old entrepreneurs \\
+    Branch choice & Chooses the best occupational or retirement branch & Pointwise comparisons $V=\max\{V_w,V_e\}$ and $W=\max\{W_e,W_r\}$ \\
+    Worker branch & Standard labor-income consumption-saving problem & Builds $m^w$ and solves for consumption and $a'$ \\
+    Entrepreneur branch & Chooses business scale and saving under enforcement & Discrete search over $k$ with a default-value check \\
+    Continuation & Carries assets and ability transitions forward & Expected values include survival, aging, ability transitions, retirement, and descendant values \\
+    Diagnostics & Shows what the fixed-price solution implies & Figures for values, policies, $k^\star$, convergence, and the young-only distribution check \\
+    \hline
+  \end{tabular}
+\end{table}
+
+The continuation step is where the dynamic model comes back together. The notebook builds continuation-value functions as weighted sums of interpolated future values. For young households, the weights include the probability of staying young and the probability of aging. For old households, the weights include old-age survival and the descendant value that matters when the old household dies. The notebook also respects the timing detail that a young worker who ages enters retirement directly.
+
+Cell by cell, the notebook first states the Bellman system, then defines structural parameters, fixed-price inputs, grids, transition matrices, and helper interpolation functions. After that it defines the worker, entrepreneur, retiree, and continuation updates, runs value-function iteration, and produces diagnostic figures and summary tables. This organization is useful because a reader can inspect the economic role of each block instead of treating the whole household problem as one opaque maximization.
+
+\smartbib
+
+\end{document}

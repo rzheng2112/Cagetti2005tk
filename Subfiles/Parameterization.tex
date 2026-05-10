@@ -3,49 +3,48 @@
 \input{\latexroot/@resources/subfile-setup.ltx}
 \begin{document}
 
-\section{Parameterizing the Model}
+\section{Parameter Organization}
 \whenintegrated{\label{sec:parameters}}
 
-The empirical definition of entrepreneurship that we use for the calibration must be consistent with the notion of entrepreneur in our framework. We use the SCF data to classify as entrepreneurs the households that declare that they are self-employed, that they do own a business, and that they have an active management role in it. This definition eliminates managers (who are not likely to think of themselves as self-employed) and the business owners who do not manage the business that they own.
-
-Our general calibration strategy is to reduce the number of parameters that we use to match the data as much as possible. We divide our parameters into two sets. The first set either can be easily estimated from the data without using our model or has been estimated by many previous studies. We use the second set of parameters to match some relevant moments of the data.
+The parameter section in this reproduction has a limited purpose. I do not re-estimate the model and I do not clean the SCF data used in the original calibration. Instead, I organize the parameters that the notebook takes as inputs. This makes it clear which objects come from the paper's calibration and which objects are numerical choices needed to solve the fixed-price household problem.
 
 \begin{table}[htbp]
   \centering
-  \caption{Parameters of the Model}
+  \caption{Parameters Used in the Theory Reproduction}
   \whenintegrated{\label{tab:calibration}}
   \begin{tabular}{llll}
     \hline\hline
-    & & Value & Source(s) \\
+    Symbol & Description & Value used & Role in reproduction \\
     \hline
-    \multicolumn{4}{l}{\textit{Panel A: Fixed Parameters}} \\
+    \multicolumn{4}{l}{\textit{Structural parameters from the paper}} \\
     \hline
-    $\sigma$ & Risk aversion & 1.5 & \cite{Attanasio1999-ej} \\
-    $\delta$ & Depreciation rate & .06 & \cite{Stokey1995-lr} \\
-    $\alpha$ & Capital share & .33 & \cite{Gollin2002-xm} \\
-    $A$ & TFP scaling & 1.0 & Normalization \\
-    $\pi_y$ & Prob.\ staying young & .978 & See text \\
-    $\pi_o$ & Prob.\ staying old & .911 & See text \\
-    $\mathbf{P}_y$ & Income transition & See text & \cite{Storesletten2004-ns} \\
-    $p$ & Social security & 40\% avg.\ income & Kotlikoff et al.\ (1999) \\
-    $\eta$ & Altruism & 1.0 & Perfect altruism \\
+    $\sigma$ & Risk aversion & 1.5 & Preferences \\
+    $\beta$ & Discount factor & 0.865 & Intertemporal utility \\
+    $\delta$ & Depreciation rate & 0.06 & Business capital \\
+    $\nu$ & Decreasing returns & 0.88 & Entrepreneurial technology \\
+    $f$ & Default retention share & 0.75 & Enforcement constraint \\
+    $\pi_y$ & Prob.\ of staying young & 0.978 & Demographics \\
+    $\pi_o$ & Prob.\ of old-age survival & 0.911 & Demographics \\
+    $\eta$ & Altruism weight & 1.0 & Bequest motive \\
+    $\theta$ & Entrepreneurial ability grid & $(0,0.514)$ & Ability states \\
+    $\mathbf{P}_\theta$ & Ability transition & See notebook & Ability persistence \\
+    $\mathbf{P}_y$ & Labor-income transition & See notebook & Worker productivity \\
     \hline
-    \multicolumn{4}{l}{\textit{Panel B: Calibrated Parameters}} \\
+    \multicolumn{4}{l}{\textit{Fixed-price inputs in the notebook}} \\
     \hline
-    $\beta$ & Discount factor & .865 & \\
-    $\theta$ & Entrepreneurial ability & $[0,\; .51]$ & \\
-    $\mathbf{P}_\theta$ & Ability transition & See text & \\
-    $\nu$ & Decreasing returns & .88 & \\
-    $f$ & Default retention & 75\% & \\
+    $r$ & Net interest rate & 0.065 & Fixed price input \\
+    $w$ & Wage normalization & 1.0 & Fixed price input \\
+    $\tau$ & Payroll tax & 0.10 & Illustrative input \\
+    $p$ & Pension payment & $0.4\,wE[y]$ & Pension rule \\
     \hline
   \end{tabular}
 \end{table}
 
-Panel~A of the table shows the set of parameters that we take from other studies. We take the coefficient of relative risk aversion to be 1.5, a value close to those estimated by \cite{Attanasio1999-ej}. The depreciation rate $\delta$ is 6 percent. The share of income that goes to capital in the nonentrepreneurial sector is 0.33. The probabilities of aging and of death are such that the average length of the working life is 45 years, and the average length of the retirement period is 11 years. The logarithm of the income process $y$ for working people follows an AR(1) with persistence 0.95, as estimated by \cite{Storesletten2004-ns}. The variance is chosen to match the Gini coefficient for earnings of 0.38. The social security replacement rate is 40 percent of average income. In the baseline case we set $\eta = 1$ (perfect altruism).
+The first group is the economically meaningful parameter block. These are the parameters that define preferences, technology, demographics, ability processes, and the enforcement friction. The notebook's \texttt{PaperStructuralParams} class keeps these objects in one place so that a reader can connect the code back to the Bellman equations.
 
-Panel~B lists the remaining parameters: $\beta$, the vector $\boldsymbol{\theta}$, $\mathbf{P}_\theta$, $\nu$, and $f$. We consider a very parsimonious calibration and allow for only two values of entrepreneurial ability: zero and a positive number. We use these six parameters to pin down the following moments: the capital-output ratio, the fraction of entrepreneurs in the population, the fraction of entrepreneurs exiting entrepreneurship, the fraction of workers becoming entrepreneurs, the ratio of median net worth of entrepreneurs to that of workers, and the wealth Gini coefficient.
+The second group is specific to the current reproduction. The notebook works at fixed prices, using an interest rate close to the paper's baseline solved economy and normalizing wages. The payroll tax and pension rule are included because they appear in the worker and retiree budget constraints, but the notebook does not solve for the social-security budget balance. This is why I treat $\tau$ as an input rather than as a reproduced equilibrium outcome.
 
-Given the features matched in the calibration, we analyze how well the model matches the overall distribution of wealth and the distributions of wealth for entrepreneurs and workers. We use the implications of the model in this respect as a check of the validity of our model.
+Finally, the notebook also has numerical settings that are not structural parameters: the asset grid, the grid for entrepreneurial capital $k$, value-function-iteration tolerances, damping, and the EGM stabilization option. These settings affect the approximation, but they are not part of the economic calibration. I keep them separate in the code because changing a grid should not be confused with changing the model.
 
 \smartbib
 

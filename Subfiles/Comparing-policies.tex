@@ -3,129 +3,88 @@
 \input{\latexroot/@resources/subfile-setup.ltx}
 
 \begin{document}
-% local.sty resets \latexroot to `.` when loading the main preamble; for standalone
-% subfiles the images live in ../images/, not ./images/ under Subfiles/.
 \whenstandalone{%
-  \graphicspath{{../images/}}%
+  \graphicspath{{../Figures/Cagetti2005tk/}{../images/}}%
 }%
 \whenintegrated{%
-  \graphicspath{{./images/}}%
+  \graphicspath{{./Figures/Cagetti2005tk/}{./images/}}%
 }%
 
 \FloatBarrier
-\section{Results}
+\section{Reproduction Results and Discussion}
 \whenintegrated{\label{sec:comparing}}
 
-We first study the two versions of our model (one without and one with entrepreneurs) and discuss their ability to reproduce the observed inequality in wealth.
+This section compares the notebook results with the benchmark results in Cagetti and De Nardi (2006). The comparison has to be careful because my notebook solves a fixed-price household problem and uses a young-only stationary distribution diagnostic. The original paper solves a full stationary general equilibrium with young and old households, bequests, market clearing, and calibration to data moments. Therefore, I treat the notebook results as a partial reproduction of the theory mechanism, not as a full replication of the quantitative tables.
+
+\subsection{Convergence and Computation}
+
+The first result is that the value-function iteration now converges. Figure~\ref{fig:convergence} shows the total update norm and the separate update norms for the main value functions. The notebook reaches the stopping rule after 115 iterations, with a final sum norm of $4.78\times 10^{-4}$ against a tolerance of $5.0\times 10^{-4}$. This is important because the later occupational-choice and distribution results are based on a converged fixed-price solution rather than on an unfinished iterate.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.86\textwidth]{convergence}
+  \caption{Convergence diagnostics for the fixed-price household problem.}
+  \whenintegrated{\label{fig:convergence}}
+\end{figure}
+
+The enforcement constraint is active in the computation. In the baseline run, all entrepreneurial candidate points are feasible in the resource sense, but only about 12.9 percent of young entrepreneur candidates pass the repayment-versus-default check. For old entrepreneurs the enforcement pass rate is about 67.0 percent. This difference is economically sensible: old high-ability entrepreneurs in the solved grid have a stronger incentive to continue operating firms, while many young households still find the worker branch more attractive.
+
+\subsection{Value Functions and Policy Functions}
+
+Figure~\ref{fig:values-policies-kstar} summarizes the most useful model objects from the notebook. The top-left panel compares the young worker value $V_w$ and young entrepreneur value $V_e$ for high entrepreneurial ability and middle labor productivity. The entrepreneur value is very low at the borrowing-constrained end of the grid, which reflects the difficulty of running a firm with too little collateral. At higher assets, the occupational envelope becomes much closer, and the branch choice is determined by the comparison between the worker outside option and entrepreneurial returns.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.92\textwidth]{values_policies_kstar}
+  \caption{Value functions, saving policies, occupational choice, and entrepreneurial investment from the notebook.}
+  \whenintegrated{\label{fig:values-policies-kstar}}
+\end{figure}
+
+The top-right panel shows that old high-ability entrepreneurs prefer continuing entrepreneurship over retirement throughout the plotted asset grid. This matches the intuition of the original paper: once a high-ability entrepreneur has access to the business technology, continuing can be valuable because entrepreneurial returns are high relative to the safe return.
+
+The middle panels show next-period asset policies for workers and retirees. Both policies are below the 45-degree line at high assets in the plotted range, which means households do not keep increasing assets one-for-one forever. This is partly due to the finite grid and fixed-price setting. The bottom-left panel shows the entrepreneurial capital choice $k^\star$. The old entrepreneur reaches a high business scale more quickly, while the young entrepreneur's $k^\star$ rises with assets and then flattens near the upper part of the discrete $k$ grid. This is exactly the mechanism I wanted the reproduction to show: assets relax the ability to operate a larger firm, but the enforcement constraint and the discrete capital grid limit the feasible scale.
+
+The bottom-right panel is the clearest occupational-choice picture. With zero entrepreneurial ability, nobody chooses entrepreneurship. With high entrepreneurial ability, the probability of choosing entrepreneurship is higher for lower labor productivity states and higher assets. In the current run, the share of the asset grid where $V_e\geq V_w$ is 28.7 percent for the lowest labor productivity state and 5.0 percent for the highest labor productivity state. This makes economic sense because high labor productivity raises the worker outside option.
+
+\subsection{Comparison with the Original Paper}
+
+Table~\ref{tab:paper-vs-reproduction} compares the notebook's main numerical outputs with the original paper's benchmark model results. The entrepreneur share is the closest comparison. The original paper reports 7.5 percent entrepreneurs in the baseline model, and the notebook's young-only distribution gives 8.25 percent. This is close enough to show that the occupational-choice mechanism is working in the right range.
 
 \begin{table}[htbp]
   \centering
-  \caption{Comparing Data and Models with and without Entrepreneurs}
-  \whenintegrated{\label{tab:data-vs-models}}
-  \begin{tabular}{lccccccc}
+  \caption{Benchmark Results and Current Reproduction Outputs}
+  \whenintegrated{\label{tab:paper-vs-reproduction}}
+  \begin{tabular}{p{0.23\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.31\textwidth}}
     \hline\hline
-    & Capital-- & Wealth & Entre- & \multicolumn{4}{c}{Percentage Wealth in Top} \\
-    \cline{5-8}
-    & Output & Gini & preneurs & 1\% & 5\% & 20\% & 40\% \\
+    Moment & Original paper baseline & Notebook output & Interpretation \\
     \hline
-    U.S.\ data & 3.0 & .80 & 7.55\% & 30 & 54 & 81 & 94 \\
-    Model w/o entrepreneurs & 3.0 & .60 & 0\% & 4 & 20 & 58 & 95 \\
-    Baseline w/ entrepreneurs & 3.0 & .80 & 7.50\% & 31 & 60 & 83 & 94 \\
+    Entrepreneur share & 7.50\% & 8.25\% & Close in the fixed-price, young-only diagnostic \\
+    Wealth Gini & 0.80 & 0.62 & Too low because full demographic wealth accumulation is not reproduced \\
+    Top 1\% wealth share & 31\% & 6.10\% & Far below paper; upper tail is missing \\
+    Top 5\% wealth share & 60\% & 27.78\% & Below paper; young-only kernel understates concentration \\
+    Capital-output ratio & 3.0 & Not reproduced & Requires general equilibrium aggregation \\
     \hline
   \end{tabular}
 \end{table}
 
-\subsection{The Model without Entrepreneurs}
+The comparison shows both success and limitation. The success is that the notebook reproduces the branch structure well enough to generate an entrepreneur share near the paper's baseline. It also reproduces the qualitative occupational-choice logic: high entrepreneurial ability and sufficient assets make entrepreneurship more attractive, while high labor income makes wage work more attractive.
 
-The model economy without entrepreneurs assigns zero entrepreneurial ability to everyone. This model economy produces a distribution of wealth that is much less concentrated than that in the data and, in particular, does not explain the emergence of the large estates that characterize the upper tail of the distribution of wealth.
+The limitation is the wealth distribution. The notebook's wealth Gini is 0.62 and its top 1 percent wealth share is only 6.1 percent, far below the paper's baseline values. I do not interpret this as evidence against the original model. Instead, it reflects the narrower reproduction. The original paper's wealth concentration comes from the full distribution over ages, entrepreneurs, retirees, and dynasties, combined with general equilibrium and calibration. My notebook uses only a young-only diagnostic distribution, so it does not yet include the full bequest and old-age wealth accumulation channels that are important for the upper tail.
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{wealth_dist_no_entrepreneurs.jpg}
-  \caption{Distribution of wealth, conditional on wealth being positive, for the whole population. Dash-dot line: data; solid line: model without entrepreneurs.}
-  \whenintegrated{\label{fig:wealth-no-entrepreneurs}}
-\end{figure}
+\subsection{Stationary Distribution Diagnostic}
 
-While the data on wealth display a fat tail, in the model without entrepreneurial choice, all households hold less than \$1.1 million.
-
-\subsection{The Model with Entrepreneurs}
-
-In our baseline simulation the equilibrium interest rate $r$ is 6.5 percent; the share of total wealth held by entrepreneurs is 29 percent, compared with 33 percent in the data; and the degree of decreasing returns to the entrepreneurial technology is 0.88. This parameterization matches the distribution of wealth very well both for the overall population and for the subpopulation of entrepreneurs.
+Figure~\ref{fig:mu-marginal-assets} reports the young-only distribution diagnostic. The right panel shows that the distribution iteration itself converges smoothly. The left panel shows mass both near zero assets and near the upper part of the grid. This tells me that the policy rules are moving households through the asset grid in a stable way. However, it also shows why the distribution comparison is limited. The diagnostic distribution is shaped by the truncated asset grid and does not include the full demographic status dimension, so it cannot fully reproduce the paper's top wealth shares.
 
 \begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\textwidth]{wealth_dist_with_entrepreneurs.jpg}
-  \caption{Distribution of wealth, conditional on wealth being positive, for the whole population. Dash-dot line: data; solid line: baseline model with entrepreneurs.}
-  \whenintegrated{\label{fig:wealth-with-entrepreneurs}}
+  \includegraphics[width=0.86\textwidth]{mu_marginal_assets}
+  \caption{Young-only asset distribution diagnostic from the notebook.}
+  \whenintegrated{\label{fig:mu-marginal-assets}}
 \end{figure}
 
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{wealth_dist_workers_vs_entrepreneurs.jpg}
-  \caption{Distribution of wealth, conditional on wealth being positive, in the baseline model with entrepreneurs. Solid line: workers; dash-dot line: entrepreneurs.}
-  \whenintegrated{\label{fig:workers-vs-entrepreneurs}}
-\end{figure}
+The partial-equilibrium counterfactuals in the notebook should also be read cautiously. Some one-at-a-time changes, such as raising the interest rate to 7.5 percent or changing the pension share, converge and leave the middle-productivity young entrepreneurship region close to the baseline. Other changes, such as shutting down the bequest motive or increasing high entrepreneurial ability, do not converge within the shortened counterfactual iteration cap. I therefore use these rows only as diagnostics, not as reproduced versions of the paper's counterfactual tables.
 
-The distribution of wealth for the population of entrepreneurs displays a much fatter tail than the one for workers. Contrary to the model without entrepreneurial choice, the baseline model generates distributions of wealth for both entrepreneurs and nonentrepreneurs with a significant mass of people who have more than \$1.1 million. The nonentrepreneurs in the right tail of the wealth distribution are former entrepreneurs or descendants of entrepreneurs.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{saving_rate_highest_ability.jpg}
-  \caption{Saving rate for highest-ability workers. Solid line: those with high entrepreneurial ability; dash-dot line: those with no entrepreneurial ability; vertical line: asset level at which high-entrepreneurial ability individuals enter entrepreneurship.}
-  \whenintegrated{\label{fig:saving-rate}}
-\end{figure}
-
-Those with low entrepreneurial ability (who are thus workers) exhibit buffer stock saving behavior highlighted by \cite{Carroll1997-wz}: if their assets are low, they save; if high enough, they dissave. The saving rate of those with high entrepreneurial ability and enough assets to become entrepreneurs is positive and considerably higher than that for workers. The combination of higher returns together with the budget constraint generates a very high saving rate for entrepreneurs.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{firm_size_dist.jpg}
-  \caption{Firm size distribution, baseline model with entrepreneurs.}
-  \whenintegrated{\label{fig:firm-size}}
-\end{figure}
-
-Borrowing constraints generate a large amount of heterogeneity in the firm size distribution. The tail is generated by the entrepreneurs who have remained in business for a long period and have thus had time to save and increase the size of their firms.
-
-\subsection{The Borrowing Constraints}\whenintegrated{\label{sec:borrowing-results}}
-
-We examine the effect of changing the tightness of the borrowing constraints by increasing $f$, the fraction of working capital that cannot be seized by creditors, from 0.75 to 0.85.
-
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=0.8\textwidth]{max_investment_borrowing.jpg}
-  \caption{Maximum investment. Solid line: baseline; dash-dot line: more restrictive borrowing constraints.}
-  \whenintegrated{\label{fig:max-investment}}
-\end{figure}
-
-The capital-output ratio drops drastically, from 3.0 to 2.7, and the fraction of entrepreneurs falls from 7.5 percent to 6.9 percent since fewer high-ability individuals can borrow and start a firm.
-
-\subsection{Bequests}\whenintegrated{\label{sec:bequests}}
-
-In the baseline economy households are altruistic toward their offspring. We study what happens when households do not care about their descendants and all bequests are accidental.
-
-\begin{table}[htbp]
-  \centering
-  \caption{The Role of Borrowing Constraints and Voluntary Bequests}
-  \whenintegrated{\label{tab:borrowing-bequests}}
-  \begin{tabular}{lcccccccc}
-    \hline\hline
-    & Capital-- & Interest & Wealth & Entre- & \multicolumn{4}{c}{\% Wealth in Top} \\
-    \cline{6-9}
-    & Output & Rate & Gini & preneurs & 1\% & 5\% & 20\% & 40\% \\
-    \hline
-    U.S.\ data & 3.0 & \ldots & .80 & 7.55\% & 30 & 54 & 81 & 94 \\
-    Baseline & 3.0 & 6.5\% & .80 & 7.50\% & 31 & 60 & 83 & 94 \\
-    More stringent ($f\!=\!.85$) & 2.7 & 7.5\% & .70 & 6.90\% & 24 & 49 & 75 & 91 \\
-    No altruism ($\eta\!=\!0$) & 2.5 & 9.3\% & .70 & 7.55\% & 21 & 45 & 73 & 90 \\
-    $\eta\!=\!0$, recalib.\ $\beta\!=\!.88$ & 3.0 & 6.4\% & .80 & 7.90\% & 28 & 57 & 81 & 94 \\
-    \hline
-  \end{tabular}
-\end{table}
-
-The absence of the voluntary bequest motive reduces the incentives to accumulate capital and run larger firms. The total capital of the economy decreases from 3.0 to 2.5, and the concentration of wealth drops substantially. As also shown by \cite{De-Nardi2004-gc}, voluntary bequests are fundamental in explaining the concentration of wealth.
-
-\subsection{Impulse responses}\whenintegrated{\label{sec:IRFs}}
-(Placeholder for future impulse response analysis.)
+Overall, the reproduction is strongest on the household problem and weaker on the aggregate distribution. It succeeds at organizing the model, solving the baseline fixed-price problem, and showing the occupational-choice mechanism. It does not yet reproduce the full wealth-concentration result, because that requires the full stationary equilibrium and demographic distribution.
 
 \smartbib
 

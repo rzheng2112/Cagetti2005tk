@@ -6,15 +6,13 @@
 \section{Conclusions}\whenintegrated{\label{conclusion}}
 \whenintegrated{\label{sec:conclusion}}
 
-We developed and solved numerically a model of occupational choice, wealth accumulation, and bequests in which entrepreneurs face an endogenous borrowing constraint that limits the amount that they can borrow. The entrepreneur's wealth acts as collateral, so the richer the entrepreneur, the higher the amount that he can borrow.
+This project reproduces the theoretical structure of the Cagetti and De Nardi household problem. The main contribution of my reproduction is organizational and computational: it restates the model, separates the worker and entrepreneur branches, solves the baseline fixed-price household problem, and compares the notebook output with the original paper's benchmark moments.
 
-A very parsimonious parameterization of our model generates a wealth distribution that matches the one observed in the data, both for entrepreneurs and for workers. It also produces returns from entrepreneurship and households' entry probabilities into entrepreneurship as a function of one's wealth, which are consistent with the ones measured in the data. None of the parameters of the model were chosen to obtain these results.
+The reproduction captures the central economic mechanism. Workers solve a standard consumption-saving problem, while entrepreneurs also choose business capital and must satisfy an enforcement constraint. Occupational choice compares the value of these two branches. In the baseline run, the young-only entrepreneur share is 8.25 percent, close to the original paper's 7.5 percent benchmark. This suggests that the branch structure and occupational-choice logic are working in the right range.
 
-The key mechanism is that many entrepreneurs face potentially high rates of return but are constrained in the amount that they can borrow. To expand their firm, these entrepreneurs keep saving. In doing so, they become richer and richer. The most successful dynasties share their fortunes with their children, some of whom will keep the family firm going, thus expanding the dynasty's fortune even more.
+The reproduction is much less successful for the wealth distribution. The notebook's young-only wealth Gini is 0.62, compared with 0.80 in the paper's baseline model, and the top 1 percent wealth share is much lower than in the original paper. This is not surprising because the notebook does not yet include the complete demographic stationary distribution, market clearing, full calibration, or the dynastic wealth accumulation channel.
 
-We show that the tightness of borrowing constraints and voluntary bequests are main forces in determining the number of entrepreneurs, the size of their firms, the overall wealth concentration in the population, and the aggregate capital accumulation.
-
-These results have implications for policy analysis, such as subsidized loans to entrepreneurs and estate taxes. Subsidized loans would make it cheaper for the entrepreneurs to borrow but would also change their incentives to default, making the effects of this policy a priori ambiguous. Taxing bequests may decrease inequality, while at the same time reducing the amount of entrepreneurial wealth that could be used as collateral, and thus may affect both the number of entrepreneurs and the total capital of the economy, as shown by Cagetti and De Nardi (2004).
+The most natural next step would be to replace the young-only stationary distribution check with a full demographic distribution over young workers, young entrepreneurs, old entrepreneurs, and retirees. After that, the model could be closed with market clearing and social-security budget balance, and only then would it be appropriate to compare the reproduced wealth distribution and counterfactuals more directly with the original paper's quantitative tables.
 
 \smartbib
 

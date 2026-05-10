@@ -6,26 +6,17 @@
 \whenintegrated{\label{microeconomic-literature}}\par\section{Wealth, Entrepreneurship, and Borrowing Constraints}
 \whenintegrated{\label{sec:microlit}}
 
-\subsection{Which Are the Rich Households?}
+The original paper is motivated by a simple empirical fact: entrepreneurs are a small part of the population but hold a large share of wealth. I use those facts as background for the model reproduction, not as newly cleaned or newly reproduced SCF evidence in this project. The point for the current write-up is that the theory needs a mechanism that can connect business ownership, saving, and the upper tail of the wealth distribution.
 
-Wealth holdings are massively concentrated in the hands of a small fraction of households, and this wealth concentration is much larger than the one documented for labor earnings and total income. This observation raises the question of which saving motives generate the amplification in the concentration of wealth with respect to the one in income.
-
-When one is looking at the data, it is clear that there is a tight relationship between being an ``entrepreneur'' and being rich. We document this relationship using different definitions of entrepreneurship, and we then discuss alternative ways of acquiring wealth.
-
-The SCF asks several questions that we can use to classify a household by its occupational status:
-\begin{enumerate}
-  \item ``Do you work for someone else, are you self-employed, or what?''
-  \item ``Do you (and your family living here) own or share ownership in any privately held businesses, farms, professional practices or partnerships?''
-  \item ``Do you (or anyone in your family living here) have an active management role in any of these businesses?''
-\end{enumerate}
+Cagetti and De Nardi classify entrepreneurs using information on self-employment, business ownership, and active management. Table~\ref{tab:entrepreneurs-population} reports their benchmark definitions. The narrowest definition, self-employed business owners, is closest to the model idea of an active entrepreneur because it excludes households that only passively own a business.
 
 \begin{table}[htbp]
   \centering
-  \caption{Percentage of Entrepreneurs (According to Various Definitions) in the Population and Corresponding Share of Total Wealth Held}
+  \caption{Original Paper's Entrepreneurship Definitions and Wealth Shares}
   \whenintegrated{\label{tab:entrepreneurs-population}}
   \begin{tabular}{lcc}
     \hline\hline
-    & Percent in Population & Share of Total Wealth \\
+    Definition & Percent in population & Share of total wealth \\
     \hline
     Business owners or self-employed & 16.7 & 52.9 \\
     All business owners & 13.3 & 48.8 \\
@@ -36,17 +27,15 @@ The SCF asks several questions that we can use to classify a household by its oc
   \end{tabular}
 \end{table}
 
-The key message of this table is that, regardless of the specific definition of entrepreneurship used, entrepreneurs are a relatively small fraction of the population and hold a large fraction of the total net worth.
-
-Table~\ref{tab:wealth-distribution} documents wealth concentration in the United States: the households in the top 1 percent of the wealth distribution hold about 30 percent of total net worth, and those in the top 5 percent hold more than half of the total.
+The model also starts from the observation that wealth is much more concentrated than labor earnings. Table~\ref{tab:wealth-distribution} gives the original paper's summary of the top of the U.S.\ wealth distribution. In this reproduction I treat these numbers as benchmark facts from the paper, not as outcomes of my own empirical data pipeline.
 
 \begin{table}[htbp]
   \centering
-  \caption{U.S.\ Wealth Distribution}
+  \caption{Benchmark Wealth Concentration Reported in the Original Paper}
   \whenintegrated{\label{tab:wealth-distribution}}
   \begin{tabular}{lcccc}
     \hline\hline
-    & \multicolumn{4}{c}{Fraction of People, Top} \\
+    & \multicolumn{4}{c}{Fraction of people, top} \\
     \cline{2-5}
     & $1\%$ & $5\%$ & $10\%$ & $20\%$ \\
     \hline
@@ -55,36 +44,9 @@ Table~\ref{tab:wealth-distribution} documents wealth concentration in the United
   \end{tabular}
 \end{table}
 
-A whopping 81 percent of those who belong to the top 1 percent of the wealth distribution declare that they either are self-employed or are business owners. All business owners are 76 percent of the richest 1 percent of households.
+The literature before Cagetti and De Nardi had already made two points that are important for the reproduction. First, incomplete-markets models can generate precautionary saving but often have trouble matching the extreme upper tail of wealth. Second, entrepreneurship models show that liquidity and borrowing constraints can affect entry, investment, and saving. Examples include \cite{Evans1989-ws}, \cite{Quadrini2000-mp}, \cite{Gentry2004-rj}, and \cite{Buera2006-wj}. The contribution of the Cagetti and De Nardi model is to put occupational choice, entrepreneurial investment, borrowing constraints, and intergenerational wealth transmission inside one household problem.
 
-\begin{table}[htbp]
-  \centering
-  \caption{Fraction (\%) of Entrepreneurs in a Given Wealth Percentile of the Overall U.S.\ Wealth Distribution}
-  \whenintegrated{\label{tab:entrepreneurs-by-wealth}}
-  \begin{tabular}{lcccc}
-    \hline\hline
-    & \multicolumn{4}{c}{Wealth Percentile, Top} \\
-    \cline{2-5}
-    & 1\% & 5\% & 10\% & 20\% \\
-    \hline
-    Business owners or self-employed & 81 & 68 & 54 & 39 \\
-    All business owners & 76 & 62 & 49 & 36 \\
-    Active business owners & 65 & 51 & 42 & 30 \\
-    Self-employed & 62 & 47 & 38 & 26 \\
-    Self-employed business owners & 54 & 39 & 32 & 22 \\
-    \hline
-  \end{tabular}
-\end{table}
-
-Regardless of the specific definition of entrepreneurship, entrepreneurs are much richer than nonentrepreneurs. The overall message is that most rich people are entrepreneurs.
-
-\subsection{Entrepreneurship and Borrowing Constraints}
-
-To estimate the severity of borrowing constraints on entrepreneurial entry and continuation decisions, one would want to know how much potential and existing entrepreneurs would like to borrow, at what interest rate, and how much they are actually able to borrow. Unfortunately, such data are not available.
-
-Many papers have used a variety of data sets and methodologies to indirectly estimate the severity of borrowing constraints for entrepreneurs. Among these works, \cite{Evans1989-ws} and \cite{Buera2006-wj} estimate structural models of entrepreneurship and find evidence of borrowing constraints; \cite{Gentry2004-rj} and Eisfeldt and Rampini (2005) also argue that costly external financing has important implications for investment and saving decisions. \cite{Hurst2004-sf} have disputed the relevance of borrowing constraints to entrepreneurial entry: they estimate that the probability of entering entrepreneurship as a function of initial wealth is first flat over a large range of the wealth distribution and then increases for the richest workers. We will show that a model of entrepreneurial choice with borrowing constraints is capable of generating this type of entry probabilities as a function of one's own wealth.
-
-The need to accumulate assets in the presence of borrowing constraints may also generate high saving rates among entrepreneurs (or households planning to become entrepreneurs). Using different data sets, \cite{Quadrini1999-zm} and \cite{Gentry2004-rj} show higher saving rates for entrepreneurs than for the rest of the population. Among the self-employed business owners, 29 percent declare that they currently use their own personal assets as collateral to finance their business. Among the self-employed business owners, 18 percent report that they have been turned down for credit, and 9 percent state that they thought of applying but changed their mind because they thought they might be turned down.
+For this project, the borrowing-constraint literature matters mainly because it tells me what to reproduce theoretically. The enforcement constraint is not just an exogenous debt limit. It is an incentive condition: the entrepreneur must prefer to repay rather than default and work as a wage earner. That is why the notebook gives special attention to the entrepreneur branch and to the comparison between the value of honoring debt and the value of default.
 
 \smartbib
 

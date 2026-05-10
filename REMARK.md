@@ -58,7 +58,7 @@ cd Cagetti2005tk
 Bare `./reproduce.sh` runs the minimal reproduction
 (`./reproduce_min.sh`) and, if a TeX Live installation is present,
 rebuilds `Cagetti2005tk.pdf` from the artifacts produced by the
-notebook. The minimal reproduction alone takes roughly 15 minutes on
+notebook. The minimal reproduction alone takes roughly 8--12 minutes on
 a recent laptop.
 
 To run only the minimal reproduction:

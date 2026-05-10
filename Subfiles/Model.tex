@@ -15,81 +15,132 @@
 \section{The Model}\whenintegrated{\label{model}}
 \whenintegrated{\label{sec:model}}
 
-\subsection{Demographics}
+This section explains the theoretical model objects that I reproduce in the notebook. The aim is not to rewrite the original Cagetti and De Nardi paper, but to identify the pieces of the household problem that have to be represented in code: the state variables, the worker branch, the entrepreneur branch, the enforcement constraint, and the continuation values.
 
-We adopt a life cycle model with intergenerational altruism. Households go through two stages of life, young and old age. A young person faces a constant probability of aging during each period ($1-\pi_{y}$), and an old person faces a constant probability of dying during each period ($1-\pi_{o}$). When an old person dies, his offspring enters the model, carrying the assets bequeathed to him by the parent. Appropriately parameterized, this framework generates households for which the average lengths of the working period and the retirement period are realistic. Our model period is one year.
+\subsection{Household State and Timing}
 
-There is a continuum of households of measure one. The households are subject to idiosyncratic shocks, but there is no aggregate uncertainty, as in \cite{Bewley1977-gs}.
+There is a continuum of households and no aggregate uncertainty. The full individual state can be written as
+\[
+  \mathbf{x} = (a,y,\theta,s),
+\]
+where $a$ is beginning-of-period assets, $y$ is worker productivity, $\theta$ is entrepreneurial ability, and $s$ records the household's demographic and occupational status. In the paper this status separates young workers, young entrepreneurs, old entrepreneurs, and old retirees. In the notebook I keep the same economic distinction through the value functions $V$, $V_w$, $V_e$, $W$, $W_e$, and $W_r$.
 
-\subsection{Preferences}
+The timing is useful to state explicitly. At the start of the period, the household observes assets and current abilities. It then makes a discrete status decision: a young household chooses between working and entrepreneurship, while an old entrepreneur chooses between continuing the business and retiring. After that branch is chosen, the household chooses continuous controls. Everyone chooses consumption $c$ and next-period assets $a'$. Entrepreneurs also choose working capital $k$, which is an intra-period business scale and does not itself carry into the next period as a state variable.
 
-The household's utility from consumption is given by
+\subsection{Preferences, Demographics, and Continuation}
+
+Households have CRRA period utility,
 \begin{equation}
-  u(c) = \frac{c^{1-\sigma}}{1-\sigma}.
+  u(c)=\frac{c^{1-\sigma}}{1-\sigma}.
   \whenintegrated{\label{eq:utility}}
 \end{equation}
-The households discount the future at rate $\beta$, and, in addition, they discount the utility of their offspring at rate $\eta$. In the purely life cycle version ($\eta=0$), individuals put no weight on the utility of their descendants. In the perfectly altruistic version ($\eta=1$), individuals care about their descendants as much as themselves. We assume exogenous labor supply.
+Future utility is discounted by $\beta$. The model also includes intergenerational altruism through the parameter $\eta$. When $\eta=0$, the household has no voluntary bequest motive. When $\eta=1$, the household values the descendant like a dynastic continuation.
 
-\subsection{Technology}
+Demographics are represented with two survival probabilities. A young household remains young with probability $\pi_y$ and becomes old with probability $1-\pi_y$. An old household survives with probability $\pi_o$ and dies with probability $1-\pi_o$, in which case a descendant enters the model with inherited assets. The notebook keeps these continuation weights in the Bellman equations, although its stationary distribution diagnostic is young-only rather than a full demographic distribution.
 
-Each person possesses two types of ability: entrepreneurial ability ($\theta$), the capacity to invest capital more or less productively, and working ability ($y$), the capacity to produce income out of labor.
+\subsection{Worker Income and Entrepreneurial Technology}
 
-Entrepreneurs can borrow and invest capital in a technology whose return depends on their own entrepreneurial ability. When the entrepreneur invests $k$, the production is given by $\theta k^{\nu}$, where $\nu \in [0,1]$. Entrepreneurs thus face decreasing returns from investment, since their managerial skills become gradually stretched over larger projects (as in \cite{Lucas1978-rd}).
-
-Workers can save (but not borrow) at a riskless, constant rate of return. The nonentrepreneurial sector is represented by a standard Cobb-Douglas production function:
+Workers earn labor income from their worker productivity:
 \begin{equation}
-  F(K_c, L_c) = A K_c^{\alpha} L_c^{1-\alpha},
-  \whenintegrated{\label{eq:production}}
+  a' = (1+r)a + (1-\tau)wy - c.
+  \whenintegrated{\label{eq:worker-budget}}
 \end{equation}
-where $K_c$ and $L_c$ are the total capital and labor inputs in the nonentrepreneurial sector and $A$ is a constant. In both sectors, capital depreciates at a rate $\delta$.
-
-\subsection{Credit Market Constraints}
-
-As in \cite{Kehoe1993-co} and \cite{Cooley2004-kh}, the borrowing constraints are endogenously determined in equilibrium and stem from the assumption that contracts are imperfectly enforceable.
-
-We assume that the entrepreneurs who borrow can either invest the money and repay their debt at the end of the period or run away without investing it and be workers for one period. In the latter case, they retain a fraction $f$ of their working capital $k$ (which includes their own assets and borrowed money), and their creditors seize the rest. Hence, the entrepreneur's assets act as collateral, although the loan need not be fully collateralized.
-
-\subsection{Households}
-\whenintegrated{\label{sec:households}}
-
-Each young individual starts the period with assets $a$, entrepreneurial ability $\theta$, and worker ability $y$ and chooses whether to be an entrepreneur or a worker. The young's value function is
+Here $r$ is the risk-free interest rate, $w$ is the wage, and $\tau$ is the payroll tax used to finance pensions. A retired household receives pension income $p$ and solves a similar consumption-saving problem:
 \begin{equation}
-  V(a, y, \theta) = \max\left\{V_e(a, y, \theta),\; V_w(a, y, \theta)\right\},
+  a' = (1+r)a + p - c.
+  \whenintegrated{\label{eq:retiree-budget}}
+\end{equation}
+
+Entrepreneurs operate a decreasing-returns technology. If an entrepreneur invests working capital $k$, output is
+\[
+  \theta k^\nu,
+\]
+with $\nu<1$. The entrepreneur's resources after production and debt repayment are
+\begin{equation}
+  a' = (1-\delta)k + \theta k^\nu - (1+r)(k-a) - c.
+  \whenintegrated{\label{eq:budget-entrepreneur}}
+\end{equation}
+This equation is the main reason entrepreneurship is different from ordinary saving. The entrepreneur can choose a business scale $k$ that may exceed assets $a$, but doing so requires borrowing and therefore must satisfy the enforcement constraint.
+
+\subsection{Borrowing and Enforcement}
+
+The model does not impose a simple fixed borrowing limit. Instead, borrowing is limited by imperfect contract enforcement. If an entrepreneur defaults, the entrepreneur keeps a fraction $f$ of working capital and becomes a worker for one period. Lenders can seize the remaining fraction. Therefore a feasible entrepreneurial choice must make repayment at least as valuable as default.
+
+For a young entrepreneur the enforcement condition is
+\begin{equation}
+  u(c)+\beta\pi_y E V(a',y',\theta')
+  +\beta(1-\pi_y)E W(a',\theta')
+  \geq V_w(fk,y,\theta).
+  \whenintegrated{\label{eq:young-enforcement}}
+\end{equation}
+The left side is the value of honoring the contract. The right side is the value of defaulting, keeping $fk$, and entering the worker branch. A larger $f$ means default is more attractive, so the borrowing constraint becomes tighter. In the notebook this condition is implemented by checking each candidate $k$ against the relevant default value.
+
+\subsection{Worker and Entrepreneur Branches}
+
+The young household first compares the worker and entrepreneur branches:
+\begin{equation}
+  V(a,y,\theta)=\max\{V_w(a,y,\theta),V_e(a,y,\theta)\}.
   \whenintegrated{\label{eq:young-value}}
 \end{equation}
-where $V_e(a, y, \theta)$ is the value function of a young entrepreneur:
-\begin{gather}
-  V_e(a, y, \theta) = \max_{c, k, a'} \left\{u(c) + \beta \pi_y E V(a', y', \theta') + \beta(1-\pi_y) E W(a', \theta')\right\}, \whenintegrated{\label{eq:young-entrepreneur}} \\
-  a' = (1-\delta)k + \theta k^{\nu} - (1+r)(k-a) - c, \whenintegrated{\label{eq:budget-entrepreneur}} \\
-  u(c) + \beta \pi_y EV(a',y',\theta') + \beta(1-\pi_y) EW(a',\theta') \geq V_w(f \cdot k, y, \theta), \whenintegrated{\label{eq:enforcement}} \\
-  a \geq 0. \whenintegrated{\label{eq:nonneg-assets}}
-\end{gather}
-The enforcement constraint~\eqref{eq:enforcement} ensures that the entrepreneur prefers repaying to defaulting: in case of default, the entrepreneur retains fraction $f$ of working capital and becomes a worker.
-
-The value function for the young worker is
+The worker branch is a standard consumption-saving problem:
 \begin{equation}
-  V_w(a, y, \theta) = \max_{c, a'}\left\{u(c) + \beta \pi_y EV(a', y', \theta') + \beta(1-\pi_y) W_r(a')\right\}
+  V_w(a,y,\theta)
+  = \max_{c,a'}
+  \left\{
+    u(c)+\beta\pi_y E V(a',y',\theta')
+    +\beta(1-\pi_y) W_r(a')
+  \right\},
   \whenintegrated{\label{eq:young-worker}}
 \end{equation}
-subject to $a' = (1+r)a + (1-\tau)wy - c$ and $a \geq 0$, where $w$ is the wage and $\tau$ is a proportional payroll tax financing old-age social security.
+subject to equation~\eqref{eq:worker-budget} and $a'\geq 0$. If a young worker ages, the model sends the household to retirement, so the continuation term uses $W_r$.
 
-The old entrepreneur can choose to continue the entrepreneurial activity or to retire:
+The entrepreneur branch adds the business capital choice:
 \begin{equation}
-  W(a, \theta) = \max\left\{W_e(a, \theta),\; W_r(a)\right\}.
+  V_e(a,y,\theta)
+  = \max_{c,k,a'}
+  \left\{
+    u(c)+\beta\pi_y E V(a',y',\theta')
+    +\beta(1-\pi_y)E W(a',\theta')
+  \right\},
+  \whenintegrated{\label{eq:young-entrepreneur}}
+\end{equation}
+subject to equation~\eqref{eq:budget-entrepreneur}, $a'\geq 0$, $k\geq 0$, and the enforcement condition~\eqref{eq:young-enforcement}. This is the branch where the reproduction has to do the most work, because $k$ affects both business returns and the default value.
+
+\subsection{Old Households, Retirement, and Bequests}
+
+Old entrepreneurs choose whether to continue operating the business or retire:
+\begin{equation}
+  W(a,\theta)=\max\{W_e(a,\theta),W_r(a)\}.
   \whenintegrated{\label{eq:old-value}}
 \end{equation}
+The continuing entrepreneur branch is similar to the young entrepreneur branch, but the continuation value reflects survival as old and possible death with a descendant:
+\begin{equation}
+  W_e(a,\theta)=\max_{c,k,a'}
+  \left\{
+    u(c)+\beta\pi_o E W(a',\theta')
+    +\eta\beta(1-\pi_o)E V(a',y',\theta')
+  \right\}.
+  \whenintegrated{\label{eq:old-entrepreneur}}
+\end{equation}
+The old entrepreneur faces the same resource equation and a default comparison against retirement value $W_r(fk)$.
 
-\subsection{Equilibrium}
+Retirement is absorbing in the sense that a retired old household does not re-enter entrepreneurship:
+\begin{equation}
+  W_r(a)=\max_{c,a'}
+  \left\{
+    u(c)+\beta\pi_o W_r(a')
+    +\eta\beta(1-\pi_o)E V(a',y',\theta')
+  \right\},
+  \whenintegrated{\label{eq:retiree}}
+\end{equation}
+subject to equation~\eqref{eq:retiree-budget}. This equation is also where voluntary bequests enter. When old households die, descendants receive assets and draw ability states, so saving can matter for both the current household and the next generation.
+
+\subsection{Stationary Equilibrium}
 \whenintegrated{\label{sec:equilibrium}}
 
-Let $\mathbf{x} = (a, y, \theta, s)$ be the state vector for an individual, where $s$ distinguishes young workers, young entrepreneurs, old entrepreneurs, and old retired. A stationary equilibrium is given by a risk-free interest rate $r$, wage rate $w$, and tax rate $\tau$; allocations $c(\mathbf{x})$, $a(\mathbf{x})$, occupational choices, and investments $k(\mathbf{x})$; and a constant distribution $m^*(\mathbf{x})$, such that:
-\begin{itemize}
-  \item The functions $c$, $a$, and $k$ solve the maximization problems described above.
-  \item The capital and labor markets clear.
-  \item The wage and interest rates are given by the marginal products of each factor of production.
-  \item The social security budget constraint is balanced period by period.
-  \item The distribution $m^*$ is the invariant distribution for the economy.
-\end{itemize}
+The full paper closes the model in stationary general equilibrium. A stationary equilibrium consists of prices $(r,w)$, a tax rate $\tau$, policy functions for consumption, saving, occupation, and entrepreneurial investment, and an invariant distribution over household states. Prices are consistent with the nonentrepreneurial production sector, the social-security budget balances, and the distribution is unchanged by the household transition rules.
+
+For this reproduction, I only use that equilibrium definition to understand what would be needed for a full replication. The current notebook fixes prices and policy inputs, solves the household problem, and reports diagnostics from that partial-equilibrium solution. Therefore the theory reproduction reconstructs the main dynamic program, but it does not claim to reproduce the paper's full stationary general equilibrium.
 
 \smartbib
 
