@@ -1,4 +1,7 @@
-# Jekyll configuration for HAFiscal-Latest GitHub Pages
+# Jekyll configuration for the Cagetti2005tk REMARK-in-progress GitHub Pages site.
+# Only the LaTeX write-up and the reproduction artefacts are intended to render
+# from gh-pages; everything else is excluded so the source tree does not leak
+# into the rendered site.
 exclude:
   - .devcontainer*
   - .git*
@@ -14,6 +17,7 @@ exclude:
   - Code/
   - Subfiles/
   - Private/
+  - legacy/
   - README.md
   - LICENSE
   - Dockerfile

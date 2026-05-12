@@ -1,58 +1,37 @@
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  "name": "HAFiscal",
-  "alternateName": "Heterogeneous Agent Fiscal Policy Model",
-  "description": "Computational economics research project analyzing welfare and spending effects of consumption stimulus policies using heterogeneous agent models",
+  "name": "Cagetti2005tk",
+  "alternateName": "Cagetti & De Nardi (2006) household Bellman reproduction",
+  "description": "REMARK-in-progress (standard tier): partial-equilibrium reproduction of the household Bellman system in Cagetti & De Nardi (2006), 'Entrepreneurship, Frictions, and Wealth' (Journal of Political Economy 114(5), 835-870).",
   "applicationCategory": "Research Software",
-  "operatingSystem": "Linux, macOS, Windows",
-  "programmingLanguage": ["Python", "Stata"],
+  "operatingSystem": "Linux, macOS",
+  "programmingLanguage": ["Python", "TeX"],
   "license": "https://spdx.org/licenses/Apache-2.0",
-  "url": "https://github.com/econ-ark/HAFiscal",
-  "codeRepository": "https://github.com/econ-ark/HAFiscal",
+  "url": "https://github.com/rzheng2112/Cagetti2005tk",
+  "codeRepository": "https://github.com/rzheng2112/Cagetti2005tk",
   "author": [
     {
       "@type": "Person",
-      "name": "Christopher D. Carroll",
-      "orcid": "https://orcid.org/0000-0003-3732-9312"
-    },
-    {
-      "@type": "Person",
-      "name": "Edmund Crawley"
-    },
-    {
-      "@type": "Person",
-      "name": "William Du"
-    },
-    {
-      "@type": "Person",
-      "name": "Ivan Frankovic"
-    },
-    {
-      "@type": "Person",
-      "name": "Hakon Tretvoll"
+      "name": "Rudan Zheng"
     }
   ],
   "keywords": [
+    "entrepreneurship",
+    "wealth distribution",
+    "occupational choice",
     "heterogeneous agents",
-    "fiscal policy",
-    "HANK",
-    "marginal propensity to consume",
-    "computational economics",
-    "DSGE",
-    "dynamic stochastic general equilibrium",
+    "endogenous grid method",
     "REMARK",
     "Reproduction"
   ],
   "about": {
     "@type": "Thing",
-    "name": "Fiscal Policy Analysis",
-    "description": "Analysis of consumption stimulus policies using heterogeneous agent models"
+    "name": "Entrepreneurship, frictions, and the household wealth distribution"
   },
   "citation": {
-    "@type": "CreativeWork",
-    "name": "Welfare and Spending Effects of Consumption Stimulus Policies",
-    "url": "https://github.com/econ-ark/HAFiscal/blob/main/CITATION.cff"
+    "@type": "ScholarlyArticle",
+    "name": "Entrepreneurship, Frictions, and Wealth",
+    "url": "https://doi.org/10.1086/508032"
   }
 }
-

@@ -1,0 +1,5 @@
+metric,value,basis
+gini,0.621199,young-only kernel (lower bound)
+top1,0.061006,young-only kernel (lower bound)
+top5,0.277820,young-only kernel (lower bound)
+top10,0.428438,young-only kernel (lower bound)

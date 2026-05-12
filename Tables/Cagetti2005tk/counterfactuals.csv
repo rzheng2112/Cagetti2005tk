@@ -1,0 +1,10 @@
+scenario,iters,branch_young_mid,branch_old_high,sum_norm,converged
+baseline,115,0.112500,1.000000,4.775731e-04,True
+r = 7.5%,114,0.100000,1.000000,4.781614e-04,True
+tau = 0.12,500,0.112500,1.000000,3.761414e-01,False
+pension_share=0.38,115,0.112500,1.000000,4.802088e-04,True
+f = 0.78 (tighter),114,0.112500,1.000000,4.976249e-04,True
+theta_hi = 0.55,500,0.112500,1.000000,1.201759e-01,False
+n_k = 35 (denser),115,0.112500,1.000000,4.761202e-04,True
+eta = 0 (no bequest),500,0.112500,1.000000,1.353344e+00,False
+"eta = 0, beta = 0.88",500,0.112500,1.000000,6.285175e-01,False

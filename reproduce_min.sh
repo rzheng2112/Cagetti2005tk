@@ -102,11 +102,20 @@ fi
 echo "Executing notebook in place (this does not modify your source cells;"
 echo "it only refreshes cached outputs)..."
 echo ""
+# Pin REPO_ROOT discovery for the notebook (cell 4 honors this env var as
+# the highest-priority source of truth, instead of walking Path.cwd().parents).
+export CAGETTI_REPO_ROOT="$REPO_ROOT"
+# Per-cell timeout: 600s (10 minutes). The slowest cell on a recent laptop
+# is the comparative-statics sweep (~5 minutes); 600s is comfortably above
+# that while still failing loudly if a cell hangs (e.g. a regression that
+# turns the Jacobi VFI into an infinite loop). The previous 1800s setting
+# masked precisely the kind of regression the post-run check is meant to
+# catch.
 jupyter nbconvert \
     --to notebook \
     --execute \
     --inplace \
-    --ExecutePreprocessor.timeout=1800 \
+    --ExecutePreprocessor.timeout=600 \
     "$NOTEBOOK"
 
 echo ""

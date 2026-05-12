@@ -169,13 +169,10 @@ name = "cagetti2005tk"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
-    { name = "econ-ark" },
     { name = "matplotlib" },
-    { name = "numba" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "scipy" },
-    { name = "sequence-jacobian" },
 ]
 
 [package.dev-dependencies]
@@ -215,16 +212,18 @@ jupyter = [
     { name = "notebook" },
     { name = "voila" },
 ]
+legacy = [
+    { name = "econ-ark" },
+    { name = "numba" },
+    { name = "sequence-jacobian" },
+]
 
 [package.metadata]
 requires-dist = [
-    { name = "econ-ark", specifier = "==0.14.1" },
     { name = "matplotlib", specifier = ">=3.7" },
-    { name = "numba", specifier = ">=0.57" },
     { name = "numpy", specifier = ">=1.24,<2" },
     { name = "pandas", specifier = ">=2.0" },
     { name = "scipy", specifier = ">=1.10" },
-    { name = "sequence-jacobian", specifier = "==1.0.0" },
 ]
 
 [package.metadata.requires-dev]
@@ -264,7 +263,11 @@ jupyter = [
     { name = "notebook", specifier = ">=7.0" },
     { name = "voila", specifier = ">=0.5.6" },
 ]
-qe = []
+legacy = [
+    { name = "econ-ark", specifier = "==0.14.1" },
+    { name = "numba", specifier = ">=0.57" },
+    { name = "sequence-jacobian", specifier = "==1.0.0" },
+]
 
 [[package]]
 name = "certifi"

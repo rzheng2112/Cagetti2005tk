@@ -1,17 +1,15 @@
 {
   "@context": "https://raw.githubusercontent.com/codemeta/codemeta/master/codemeta.jsonld",
   "@type": "SoftwareSourceCode",
-  "name": "HAFiscal",
-  "description": "Heterogeneous agent model for fiscal stimulus policy analysis",
-  "version": "1.0.0",
+  "name": "Cagetti2005tk",
+  "description": "REMARK-in-progress (standard tier): partial-equilibrium reproduction of the household Bellman system in Cagetti & De Nardi (2006), 'Entrepreneurship, Frictions, and Wealth' (Journal of Political Economy 114(5)).",
+  "version": "0.1.0",
   "keywords": [
+    "entrepreneurship",
+    "wealth distribution",
+    "occupational choice",
     "heterogeneous agents",
-    "fiscal policy",
-    "HANK",
-    "MPC",
-    "marginal propensity to consume",
-    "computational economics",
-    "dynamic stochastic general equilibrium",
+    "endogenous grid method",
     "REMARK",
     "Reproduction"
   ],
@@ -19,48 +17,37 @@
     {
       "@type": "ComputerLanguage",
       "name": "Python",
-      "version": "3.9+"
+      "version": "3.9"
     },
     {
       "@type": "ComputerLanguage",
-      "name": "Stata"
+      "name": "TeX"
     }
   ],
-  "runtimePlatform": "Python 3.9+",
-  "codeRepository": "https://github.com/econ-ark/HAFiscal",
+  "runtimePlatform": "Python 3.9",
+  "codeRepository": "https://github.com/rzheng2112/Cagetti2005tk",
   "license": "https://spdx.org/licenses/Apache-2.0",
   "author": [
     {
       "@type": "Person",
-      "givenName": "Christopher D.",
-      "familyName": "Carroll",
-      "orcid": "https://orcid.org/0000-0003-3732-9312"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Edmund",
-      "familyName": "Crawley"
-    },
-    {
-      "@type": "Person",
-      "givenName": "William",
-      "familyName": "Du"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Ivan",
-      "familyName": "Frankovic"
-    },
-    {
-      "@type": "Person",
-      "givenName": "Hakon",
-      "familyName": "Tretvoll"
+      "givenName": "Rudan",
+      "familyName": "Zheng"
     }
   ],
-  "citation": "https://github.com/econ-ark/HAFiscal/blob/main/CITATION.cff",
-  "relatedLink": [
-    "https://github.com/econ-ark/HAFiscal",
-    "https://github.com/llorracc/HAFiscal-Public"
-  ]
+  "citation": "https://github.com/rzheng2112/Cagetti2005tk/blob/main/CITATION.cff",
+  "referencePublication": {
+    "@type": "ScholarlyArticle",
+    "name": "Entrepreneurship, Frictions, and Wealth",
+    "author": [
+      {"@type": "Person", "givenName": "Marco", "familyName": "Cagetti"},
+      {"@type": "Person", "givenName": "Mariacristina", "familyName": "De Nardi"}
+    ],
+    "datePublished": "2006",
+    "isPartOf": {"@type": "Periodical", "name": "Journal of Political Economy"},
+    "volumeNumber": "114",
+    "issueNumber": "5",
+    "pageStart": "835",
+    "pageEnd": "870",
+    "identifier": "https://doi.org/10.1086/508032"
+  }
 }
-

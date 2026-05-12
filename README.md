@@ -41,25 +41,27 @@ The repository name follows the working-paper year, while the published article 
 
 ## How to run
 
-### Minimal computational reproduction (~90 seconds)
+### Minimal computational reproduction (~8–12 minutes on a recent laptop)
 
 From the repository root:
 
 ```bash
-./reproduce_min.sh
+./reproduce.sh
 ```
 
-This executes the theory-model reproduction notebook
+This is a thin wrapper that delegates to `./reproduce_min.sh`, which executes the theory-model reproduction notebook
 
 ```
 Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
 ```
 
-which re-states the Cagetti and De Nardi (2006) household Bellman system (equations 2–14) and solves it at the paper's calibrated structural parameters in a fixed price environment, using the SolvingMicroDSOPs stage package. It is the supported minimal computational reproduction for this REMARK.
+and then runs `scripts/check_reproduction.py` to assert numerical bands on `Tables/Cagetti2005tk/summary.csv`.
 
-The notebook imports `solution` and `stages.cons_noshocks` from `Code/Python/`. `reproduce_min.sh` checks that those files are present and exits with an explanatory error if they are not, so that a failed minimal reproduction is never silent.
+The notebook re-states the Cagetti and De Nardi (2006) household Bellman system (equations 2–14) and solves it at the paper's calibrated structural parameters in a fixed-price environment, using the SolvingMicroDSOPs stage package. It is the supported minimal computational reproduction for this REMARK.
 
-### Main LaTeX document
+The notebook imports `solution` and `stages.cons_noshocks` from `Code/Python/`. `reproduce_min.sh` checks that those files are present and exits with an explanatory error if they are not, so that a failed minimal reproduction is never silent. Most of the wall time is spent on the comparative-statics sweep in notebook cell 19; the baseline VFI itself converges in ~115 sweeps.
+
+### Main LaTeX document (optional)
 
 To build `Cagetti2005tk.pdf`:
 
@@ -78,9 +80,11 @@ pdflatex Cagetti2005tk.tex
 
 If you use `latexmk` (for example via the bundled `.latexmkrc`), you can compile with that instead.
 
-### HAFiscal-inherited flags (not Cagetti2005tk reproductions)
+The LaTeX build is **not** part of the supported minimal reproduction path; the bare `./reproduce.sh` does not invoke it (the REMARK catalog tooling does not assume a TeX Live install in the reviewer's environment).
 
-`reproduce.sh` also exposes `--comp` and `--data` flags that are inherited from the upstream HAFiscal workflow. They do **not** produce Cagetti2005tk results and are retained only so the inherited tooling keeps working. For the Cagetti2005tk REMARK, use `./reproduce_min.sh` and `./reproduce.sh --docs main`.
+### Legacy HAFiscal scripts
+
+The directory layout descends from the upstream HAFiscal REMARK template. The original 2528-line HAFiscal `reproduce.sh` (with its `--comp` / `--data` / `--envt` pipelines) is preserved unmodified at `legacy/reproduce.sh.hafiscal` for cross-reference, but it is **not** invoked from the current `reproduce.sh` and produces no Cagetti2005tk results.
 
 ### Other notebooks
 

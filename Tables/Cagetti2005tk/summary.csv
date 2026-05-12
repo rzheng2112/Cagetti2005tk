@@ -1,0 +1,8 @@
+metric,value,paper_target,notes
+ent_share_mu_young_only,0.082468,0.0750,Young-only kernel; not the paper's full-demographic stationary distribution.
+mean_assets_mu,3.454487,,Depends on a_max; see SolverSettings.
+E_y_under_mu,1.000003,1.0000,Should be close to 1 by Appendix-A normalisation.
+avg_net_labor_income_workers,0.899942,,(1 - tau) * w * y averaged over non-entrepreneur workers.
+converged,True,True,VFI convergence flag (sup-norm < tol).
+iterations,115,,VFI iterations to convergence.
+final_sum_norm,4.775731e-04,,dV + dW + dWr on the last iteration (stopping criterion).

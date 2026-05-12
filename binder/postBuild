@@ -13,9 +13,14 @@ python -c "import matplotlib as mpl; mpl.use('Agg'); import pylab as plt; fig, a
 test -e test.png && rm test.png
 
 # Install the locked project environment.
+#
+# We explicitly install the `all` dependency group (jupyter + analysis +
+# dev) and explicitly opt OUT of the optional `legacy` group, which is
+# the heavy HAFiscal-only stack (econ-ark, sequence-jacobian, numba) and
+# is not needed for ./reproduce_min.sh.
 if command -v uv >/dev/null 2>&1; then
-    echo "Installing locked project dependencies with uv sync --frozen --all-groups"
-    uv sync --frozen --all-groups
+    echo "Installing locked project dependencies with uv sync --frozen --group all"
+    uv sync --frozen --group all
 else
     echo "uv is not on PATH after conda env create; falling back to pip."
     pip install -e .

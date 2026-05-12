@@ -1,37 +1,39 @@
-# Binder Configuration
+# Binder configuration
 
-This directory contains configuration files for [MyBinder.org](https://mybinder.org), which allows users to launch interactive Jupyter notebooks in the cloud.
+This directory configures [MyBinder.org](https://mybinder.org) for the
+Cagetti2005tk REMARK.
+
+## How the bootstrap works
+
+1. `environment.yml` (in this directory) is intentionally minimal: it
+   installs Python 3.9 and `uv` only. It is **not** the canonical
+   dependency manifest. The repo-root `pyproject.toml` + `uv.lock` are
+   the canonical pin, and we want Binder to install exactly those locked
+   versions rather than letting conda re-solve to a different
+   numpy/scipy/etc.
+2. `apt.txt` lists the system packages (`latexmk` + a small TeX subset)
+   that are needed only if a Binder user clicks the optional
+   `./reproduce.sh --docs main` path. The supported minimal reproduction
+   does not need them.
+3. `postBuild` runs `uv sync --frozen` so the Binder session ends up with
+   the same `.venv/` as a local `./reproduce_min.sh` run.
 
 ## Files
 
-- **`environment.yml`** → symlink to `../environment.yml` (Single Source of Truth)
-- **`apt.txt`** - System packages to install via apt-get
-- **`postBuild`** - Post-installation script
-- **`requirements.txt`** - Additional pip requirements
+- `environment.yml` — minimal Python + uv bootstrap (separate file, **not**
+  a symlink to the repo-root `environment.yml`). The two files have
+  intentionally different scopes; see the comment headers in each.
+- `apt.txt` — system packages installed via apt-get at build time.
+- `postBuild` — installs the locked Python environment via `uv sync --frozen`.
 
-## Single Source of Truth
-
-The `environment.yml` file is a **symlink** to the root-level `environment.yml`. This ensures:
-
-- Only one environment specification to maintain
-- Binder environment matches local development environment
-- Changes to root `environment.yml` automatically apply to binder
-
-When synced to HAFiscal-Public via `makePublic-master.sh`, the symlink is materialized (converted to a regular file) by rsync's `-L` flag, which is the correct behavior for distribution.
-
-## Testing Binder
-
-To test the binder configuration locally:
+## Testing locally
 
 ```bash
-# Activate the environment
-conda env create -f ../environment.yml
-conda activate hafiscal
-
-# Or with uv
-uv sync --group=standalone
+# In a fresh Python 3.9 environment with uv installed
+uv sync --frozen
+source .venv/bin/activate
+./reproduce_min.sh
 ```
 
-## Launching on MyBinder
-
-Click the binder badge in the main README to launch the repository on MyBinder.org.
+If that succeeds locally with the `uv.lock` committed at the same
+revision, Binder should also succeed.

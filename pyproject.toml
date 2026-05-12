@@ -23,20 +23,18 @@ classifiers = [
 ]
 
 dependencies = [
-    # Economics packages
-    "econ-ark==0.14.1",
-    "sequence-jacobian==1.0.0",
-    
-    # Core scientific computing stack
+    # Core scientific computing stack used directly by the reproduction
+    # notebook (Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb)
+    # and the vendored SolvingMicroDSOPs stage code under Code/Python/.
+    # Nothing else is needed for ./reproduce_min.sh to succeed.
     "numpy>=1.24,<2",
     "scipy>=1.10",
-    "pandas>=2.0",  # Required for empirical data processing (make_liquid_wealth.py)
+    "pandas>=2.0",
     "matplotlib>=3.7",
-    "numba>=0.57",
 ]
 
 [dependency-groups]
-# Jupyter and interactive tools
+# Jupyter and interactive tools (required for nbconvert in reproduce_min.sh)
 jupyter = [
     "jupyter>=1.0",
     "notebook>=7.0",
@@ -46,7 +44,8 @@ jupyter = [
     "ipynb-py-convert>=0.4",
 ]
 
-# Statistical analysis and visualization
+# Statistical analysis and visualization (used by some companion notebooks
+# under Cagetti2005tk_material/, not by the reproduction notebook).
 analysis = [
     "statsmodels>=0.14",
     "seaborn>=0.12",
@@ -62,18 +61,23 @@ dev = [
     "pdfx>=1.4.1",  # PDF link extraction for build validation
 ]
 
-# QE submission workflow tools
-# Note: README.pdf generation now uses pandoc (system tool) instead of markdown-pdf
-# Install pandoc: brew install pandoc (macOS) or apt-get install pandoc (Linux)
-qe = [
+# Heavy upstream dependencies needed only by the HAFiscal-inherited
+# legacy/ tree (legacy/Code-HA-Models/, legacy/Code-Empirical/). The
+# Cagetti2005tk REMARK reproduction does not import these; install them
+# explicitly with `uv sync --group legacy` if you want to run the
+# legacy HAFiscal pipelines for cross-reference.
+legacy = [
+    "econ-ark==0.14.1",
+    "sequence-jacobian==1.0.0",
+    "numba>=0.57",
 ]
 
-# All dependencies for complete environment
+# All dependency groups except `legacy`, for a complete *Cagetti2005tk*
+# environment without the heavy HAFiscal stack.
 all = [
     {include-group = "jupyter"},
     {include-group = "analysis"},
     {include-group = "dev"},
-    {include-group = "qe"},
 ]
 
 # ============================================================================
@@ -112,8 +116,8 @@ all = [
 # ============================================================================
 
 [tool.setuptools]
-# HAFiscal is a research project, not an installable package
-# Disable automatic package discovery to avoid setuptools errors
+# Cagetti2005tk is a research-reproduction project, not an installable
+# package. Disable automatic package discovery to avoid setuptools errors.
 py-modules = []
 
 [tool.setuptools.packages.find]

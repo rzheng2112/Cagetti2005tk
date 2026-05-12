@@ -361,6 +361,11 @@ ls-R
 *.csv
 !Code/Empirical/rscfp2004.csv   # …except this one file
 !Code/Empirical/ccbal_answer.csv   # …except this one file
+# Cagetti2005tk reproduction artifacts: track so reviewers can `git diff`
+# against a fresh ./reproduce_min.sh run; these are small (< 5 KB each)
+# and are consumed by scripts/check_reproduction.py.
+!Tables/Cagetti2005tk/*.csv
+!Figures/Cagetti2005tk/*.csv
 
 *.dat
 make4ht-trials_private

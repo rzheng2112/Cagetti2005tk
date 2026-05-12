@@ -1,59 +1,37 @@
 {
-  "title": "HAFiscal Replication Package: Welfare and Spending Effects of Consumption Stimulus Policies",
-  "description": "Complete replication package for the paper 'Welfare and Spending Effects of Consumption Stimulus Policies' by Carroll, Crawley, Du, Frankovic, and Tretvoll (2025). This repository provides all code, data, and documentation needed to reproduce the paper's computational results, figures, and tables. The package uses the HARK (Heterogeneous Agents Resources and toolKit) framework to implement heterogeneous agent models for analyzing fiscal stimulus policies.",
+  "title": "Cagetti2005tk: a partial-equilibrium reproduction of the household Bellman system in Cagetti & De Nardi (2006)",
+  "description": "REMARK-in-progress (standard tier) that solves the household-side Bellman system of Cagetti & De Nardi (2006), 'Entrepreneurship, Frictions, and Wealth' (Journal of Political Economy 114(5), 835-870), in partial equilibrium at the paper's Table 5 calibration, using the SolvingMicroDSOPs Endogenous Grid Method stage. See REMARK.md for the detailed scope (occupational choice, value functions, calibrated parameters, persisted artifacts) and for what is *not* reproduced (the full general-equilibrium fixed point, the four-status demographic kernel, the estate-tax counterfactual).",
   "license": "Apache-2.0",
   "creators": [
     {
-      "name": "Carroll, Christopher D.",
-      "affiliation": "Johns Hopkins University",
-      "orcid": "0000-0003-3732-9312"
-    },
-    {
-      "name": "Crawley, Edmund",
-      "affiliation": "Federal Reserve Board"
-    },
-    {
-      "name": "Du, William",
+      "name": "Zheng, Rudan",
       "affiliation": "Johns Hopkins University"
-    },
-    {
-      "name": "Frankovic, Ivan",
-      "affiliation": "Deutsche Bundesbank"
-    },
-    {
-      "name": "Tretvoll, Hakon",
-      "affiliation": "Statistics Norway"
     }
   ],
   "keywords": [
-    "fiscal policy",
+    "entrepreneurship",
+    "wealth distribution",
+    "occupational choice",
     "heterogeneous agents",
-    "HANK",
-    "stimulus checks",
-    "unemployment insurance",
-    "payroll tax cuts",
-    "marginal propensity to consume",
-    "spending multipliers",
-    "consumption",
-    "macroeconomics",
+    "endogenous grid method",
     "computational economics",
-    "HARK",
-    "reproducible research"
+    "REMARK",
+    "Reproduction"
   ],
   "related_identifiers": [
     {
-      "identifier": "10.5281/zenodo.17861977",
-      "relation": "isIdenticalTo",
+      "identifier": "10.1086/508032",
+      "relation": "isSupplementTo",
       "scheme": "doi"
     },
     {
-      "identifier": "https://github.com/llorracc/HAFiscal-Public",
-      "relation": "isSupplementTo",
+      "identifier": "https://github.com/rzheng2112/Cagetti2005tk",
+      "relation": "isIdenticalTo",
       "scheme": "url"
     },
     {
-      "identifier": "https://github.com/econ-ark/HAFiscal",
-      "relation": "isVariantFormOf",
+      "identifier": "https://github.com/llorracc/SolvingMicroDSOPs",
+      "relation": "isDerivedFrom",
       "scheme": "url"
     }
   ],
@@ -63,18 +41,9 @@
     }
   ],
   "subjects": [
-    {
-      "term": "E21",
-      "scheme": "jel"
-    },
-    {
-      "term": "E62",
-      "scheme": "jel"
-    },
-    {
-      "term": "H31",
-      "scheme": "jel"
-    }
+    {"term": "D31", "scheme": "jel"},
+    {"term": "E21", "scheme": "jel"},
+    {"term": "L26", "scheme": "jel"}
   ],
   "language": "eng",
   "resource_type": {

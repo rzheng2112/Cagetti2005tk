@@ -1,0 +1,93 @@
+name: reproduce-min
+
+# Run the canonical computational reproduction (./reproduce_min.sh) on
+# every push and PR so we catch the regressions a REMARK reviewer would
+# hit (env build failure, notebook execution failure, post-run check
+# failure) before the REMARK editor's `cli.py execute conda` does.
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.tex'
+      - '**/*.bib'
+      - '**/*.bst'
+      - '**/*.cls'
+      - '**/*.sty'
+      - '**/*.pdf'
+      - 'Subfiles/**'
+      - 'Tables/**'
+      - 'Figures/**'
+      - 'images/**'
+      - 'legacy/**'
+      - '@local/**'
+      - '@resources/**'
+      - '.zenodo.json'
+      - 'CITATION.cff'
+      - '_config.yml'
+      - 'codemeta.json'
+      - 'schema.json'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel in-progress runs on the same ref when a new commit lands.
+concurrency:
+  group: reproduce-min-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  reproduce-min:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+        with:
+          version: '0.9.9'
+
+      - name: Sync locked Python environment
+        run: uv sync --frozen --group all
+
+      - name: Run the minimal reproduction
+        env:
+          # Pin REPO_ROOT for the notebook (cell 4 honors this env var as
+          # the highest-priority source of truth).
+          CAGETTI_REPO_ROOT: ${{ github.workspace }}
+          # Force the non-interactive matplotlib backend so the notebook
+          # runs without an X server. Cell 4 also handles this, but
+          # pinning here makes the contract explicit at the workflow
+          # level.
+          MPLBACKEND: Agg
+        run: ./reproduce_min.sh
+
+      - name: Upload regenerated reproduction artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cagetti2005tk-reproduction-artifacts
+          path: |
+            Tables/Cagetti2005tk/
+            Figures/Cagetti2005tk/
+          if-no-files-found: warn
+
+      - name: Diff persisted artifacts vs committed snapshot
+        # Informational only: emit a short diff summary so reviewers can
+        # see at a glance whether the fresh reproduction matches the
+        # committed Tables/Cagetti2005tk/*.csv. Does NOT fail the job
+        # (the numerical-band assertions in scripts/check_reproduction.py
+        # are the authoritative pass/fail criterion).
+        if: always()
+        run: |
+          echo "::group::Diff vs committed Tables/Cagetti2005tk/"
+          git --no-pager diff --stat -- Tables/Cagetti2005tk/ Figures/Cagetti2005tk/ || true
+          echo "::endgroup::"
