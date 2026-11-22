@@ -15,7 +15,7 @@
 \section{The Model}\whenintegrated{\label{model}}
 \whenintegrated{\label{sec:model}}
 
-This section explains the theoretical model objects that I reproduce in the notebook. The aim is not to rewrite the original Cagetti and De Nardi paper, but to identify the pieces of the household problem that have to be represented in code: the state variables, the worker branch, the entrepreneur branch, the enforcement constraint, and the continuation values.
+We describe the household state, the choices available to workers and entrepreneurs, and the continuation value for each branch.
 
 \subsection{Household State and Timing}
 
@@ -23,7 +23,7 @@ There is a continuum of households and no aggregate uncertainty. The full indivi
 \[
   \mathbf{x} = (a,y,\theta,s),
 \]
-where $a$ is beginning-of-period assets, $y$ is worker productivity, $\theta$ is entrepreneurial ability, and $s$ records the household's demographic and occupational status. In the paper this status separates young workers, young entrepreneurs, old entrepreneurs, and old retirees. In the notebook I keep the same economic distinction through the value functions $V$, $V_w$, $V_e$, $W$, $W_e$, and $W_r$.
+where $a$ is beginning-of-period assets, $y$ is worker productivity, $\theta$ is entrepreneurial ability, and $s$ records the household's demographic and occupational status. In the paper this status separates young workers, young entrepreneurs, old entrepreneurs, and old retirees. In the notebook we keep the same economic distinction through the value functions $V$, $V_w$, $V_e$, $W$, $W_e$, and $W_r$.
 
 The timing is useful to state explicitly. At the start of the period, the household observes assets and current abilities. It then makes a discrete status decision: a young household chooses between working and entrepreneurship, while an old entrepreneur chooses between continuing the business and retiring. After that branch is chosen, the household chooses continuous controls. Everyone chooses consumption $c$ and next-period assets $a'$. Entrepreneurs also choose working capital $k$, which is an intra-period business scale and does not itself carry into the next period as a state variable.
 
@@ -64,7 +64,7 @@ This equation is the main reason entrepreneurship is different from ordinary sav
 
 \subsection{Borrowing and Enforcement}
 
-The model does not impose a simple fixed borrowing limit. Instead, borrowing is limited by imperfect contract enforcement. If an entrepreneur defaults, the entrepreneur keeps a fraction $f$ of working capital and becomes a worker for one period. Lenders can seize the remaining fraction. Therefore a feasible entrepreneurial choice must make repayment at least as valuable as default.
+The model does not impose a simple fixed borrowing limit. Instead, borrowing is limited by imperfect contract enforcement. A young entrepreneur who defaults keeps a fraction $f$ of working capital and becomes a worker for one period. An old entrepreneur who defaults retires. Lenders can seize the remaining fraction. Therefore a feasible entrepreneurial choice must make repayment at least as valuable as default.
 
 For a young entrepreneur the enforcement condition is
 \begin{equation}
@@ -140,7 +140,7 @@ subject to equation~\eqref{eq:retiree-budget}. This equation is also where volun
 
 The full paper closes the model in stationary general equilibrium. A stationary equilibrium consists of prices $(r,w)$, a tax rate $\tau$, policy functions for consumption, saving, occupation, and entrepreneurial investment, and an invariant distribution over household states. Prices are consistent with the nonentrepreneurial production sector, the social-security budget balances, and the distribution is unchanged by the household transition rules.
 
-For this reproduction, I only use that equilibrium definition to understand what would be needed for a full replication. The current notebook fixes prices and policy inputs, solves the household problem, and reports diagnostics from that partial-equilibrium solution. Therefore the theory reproduction reconstructs the main dynamic program, but it does not claim to reproduce the paper's full stationary general equilibrium.
+We hold prices and policy inputs fixed when solving the household problem. The equilibrium conditions above describe the additional steps needed to close the model.
 
 \smartbib
 

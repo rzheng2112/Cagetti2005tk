@@ -1,3 +1,5 @@
+> Historical HAFiscal developer setup. See the [project README](../README.md) for Cagetti2005tk.
+
 # Quick Start: Launching DevContainer and Accessing Terminal
 
 ## Complete Step-by-Step Guide

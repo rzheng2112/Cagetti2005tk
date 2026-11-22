@@ -1,5 +1,5 @@
 {
-  "name": "HAFiscal Development (TeX Live 2025) - ${localWorkspaceFolderBasename}",
+  "name": "Historical HAFiscal Development (TeX Live 2025) - ${localWorkspaceFolderBasename}",
   "image": "mcr.microsoft.com/devcontainers/python:3.11",
   "remoteUser": "vscode",
   "runArgs": [

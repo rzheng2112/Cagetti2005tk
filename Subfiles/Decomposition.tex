@@ -6,7 +6,7 @@
 \section{Computational Decomposition}
 \whenintegrated{\label{sec:decomposition}}
 
-The purpose of the decomposition is not to introduce a new economic model. It is only a way to make the Cagetti and De Nardi household problem easier to solve and inspect in a notebook. The original model combines saving, occupational choice, entrepreneurial investment, borrowing constraints, survival, and bequests in one dynamic problem. I separate these objects into a small number of computational blocks so that each economic decision is visible.
+We separate the household problem into blocks for occupational choice, consumption and saving, entrepreneurial investment, and continuation values. The continuation values link current decisions to survival, aging, and bequests.
 
 The beginning-of-period state is assets plus the relevant ability variables. For a young household the state is $(a,y,\theta)$. For an old entrepreneur it is $(a,\theta)$, and for an old retiree it is just $a$. The first important computational step is a branch comparison. Young households compare the worker value $V_w$ with the entrepreneur value $V_e$. Old entrepreneurs compare the continuing-business value $W_e$ with retirement value $W_r$. These comparisons are pointwise maxima on the state grid.
 
@@ -40,9 +40,9 @@ The notebook then solves the consumption-saving choice given $m^e$ and keeps onl
   \end{tabular}
 \end{table}
 
-The continuation step is where the dynamic model comes back together. The notebook builds continuation-value functions as weighted sums of interpolated future values. For young households, the weights include the probability of staying young and the probability of aging. For old households, the weights include old-age survival and the descendant value that matters when the old household dies. The notebook also respects the timing detail that a young worker who ages enters retirement directly.
+The notebook builds continuation-value functions as weighted sums of interpolated future values. For young households, the weights include the probability of staying young and the probability of aging. For old households, the weights include old-age survival and the descendant value that matters when the old household dies. The notebook also respects the timing detail that a young worker who ages enters retirement directly.
 
-Cell by cell, the notebook first states the Bellman system, then defines structural parameters, fixed-price inputs, grids, transition matrices, and helper interpolation functions. After that it defines the worker, entrepreneur, retiree, and continuation updates, runs value-function iteration, and produces diagnostic figures and summary tables. This organization is useful because a reader can inspect the economic role of each block instead of treating the whole household problem as one opaque maximization.
+Cell by cell, the notebook first states the Bellman system, then defines structural parameters, fixed-price inputs, grids, transition matrices, and helper interpolation functions. After that it defines the worker, entrepreneur, retiree, and continuation updates, runs value-function iteration, and produces diagnostic figures and summary tables.
 
 \smartbib
 

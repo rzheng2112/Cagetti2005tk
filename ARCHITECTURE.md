@@ -6,7 +6,7 @@ calls what, and where outputs land.
 **Scope**: This document is normative *only* for the supported REMARK
 reproduction path (the theory-model notebook + the LaTeX write-up).
 Computational sub-trees inherited from the upstream HAFiscal template
-(`Code/HA-Models/`, `Code/Empirical/`, `reproduce/reproduce_data_moments*`)
+(`legacy/Code-HA-Models/`, `legacy/Code-Empirical/`, `reproduce/reproduce_data_moments*`)
 are still on disk for legacy reasons but are not part of any reproduction
 this REMARK claims; see `NOTICES.md` and `legacy/`.
 
@@ -15,7 +15,7 @@ this REMARK claims; see `NOTICES.md` and `legacy/`.
 ## High-level data flow
 
 ```
-binder/postBuild  or  uv sync --frozen
+./reproduce.sh
         |
         v
 reproduce_min.sh
@@ -29,7 +29,7 @@ reproduce_min.sh
         |       Tables/Cagetti2005tk/*.csv
         |
         +--> scripts/check_reproduction.py
-                (asserts numerical bands on Tables/Cagetti2005tk/summary.csv)
+                (checks nine outputs and reads the three generated tables)
 ```
 
 The optional LaTeX build (invoked separately via `./reproduce.sh --docs main`)
@@ -50,7 +50,7 @@ Cagetti2005tk/
 ├── NOTICES.md                            # third-party / vendored code
 ├── LICENSE                               # Apache-2.0
 ├── pyproject.toml + uv.lock              # Python deps (pinned)
-├── environment.yml                       # conda fallback
+├── environment.yml                       # same uv bootstrap as binder/environment.yml
 ├── binder/                               # Binder bootstrap (uv-based)
 ├── Dockerfile                            # repo2docker-compatible image
 ├── Cagetti2005tk.tex                     # main LaTeX document
@@ -81,7 +81,7 @@ to match the README of the notebook itself:
 |------|-------|------|
 | I    | 0–1   | Restate the paper's Bellman system (eqs. 2–14) |
 | II   | 2     | Map paper notation to the SolvingMicroDSOPs stage API |
-| III  | 3–13  | Setup, imports, parameter blocks (`PaperStructuralParams`, `FixedPriceInputs`, `SolverSettings`), income process, EGM wrappers, Jacobi VFI |
+| III  | 3–13  | Setup, imports, parameter blocks (`PaperStructuralParams`, `FixedPriceInputs`, `SolverSettings`), income process, EGM wrappers, damped sequential VFI |
 | IV   | 14–21 | Convergence diagnostics, value/policy plots, comparative-statics sweep, young-only stationary distribution, wealth concentration, persisted CSV writes |
 | V    | 22    | Scope, what is and is not reproduced, next steps |
 
@@ -103,7 +103,7 @@ Three things are worth knowing before reading the code:
 ## Module dependency graph
 
 ```
-numpy, scipy, matplotlib  (system libraries)
+numpy, scipy, matplotlib  (locked Python packages)
         ^
         |
 Code/Python/solution.py            <-- vendored, do not edit
@@ -119,10 +119,7 @@ Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
         scripts/check_reproduction.py
 ```
 
-`econ-ark` and `sequence-jacobian` are listed as *optional* extras in
-`pyproject.toml` because the supporting/narrative notebooks under
-`Cagetti2005tk_material/` may use them; the reproduction notebook itself
-imports neither.
+The supported notebook uses the scientific packages and Jupyter dependencies installed by `reproduce_min.sh`.
 
 ---
 
@@ -130,15 +127,10 @@ imports neither.
 
 ### `./reproduce_min.sh` — canonical computational reproduction
 
-1. Bootstraps a Python environment (`.venv/` via `uv sync --frozen` if `uv`
-   is on PATH; otherwise activates an existing venv; otherwise errors with
-   an actionable message).
-2. Verifies that the vendored `Code/Python/{solution.py,stages/cons_noshocks.py}`
-   are present.
-3. Exports `CAGETTI_REPO_ROOT` and runs the notebook in place via
-   `jupyter nbconvert --execute --inplace`.
-4. Runs `python scripts/check_reproduction.py` to assert numerical bands
-   on `Tables/Cagetti2005tk/summary.csv`.
+1. Checks the notebook, vendored modules, and checker, then installs the locked environment with `uv sync --locked --group jupyter`.
+2. Registers a temporary kernel and verifies its interpreter against the project Python.
+3. Clears the nine declared outputs and executes the notebook with the project Python's nbconvert module. The executed copy and log are in `.reproduction/`.
+4. Runs the checker with the same Python interpreter.
 
 Expected wall time on a recent laptop: **8–12 minutes** (dominated by the
 counterfactual sweep in notebook cell 19).
@@ -153,21 +145,24 @@ counterfactual sweep in notebook cell 19).
 
 This wrapper is intentionally tiny. The HAFiscal-inherited
 `reproduce/reproduce_*.sh` scripts are not invoked from it and are kept
-only for the legacy sub-trees under `Code/HA-Models/` and
-`Code/Empirical/`.
+only for the legacy sub-trees under `legacy/Code-HA-Models/` and
+`legacy/Code-Empirical/`.
 
-### `python scripts/check_reproduction.py` — standalone post-run check
+### `uv run --no-sync python scripts/check_reproduction.py` — standalone post-run check
 
-Reads `Tables/Cagetti2005tk/summary.csv` and asserts:
+Checks that all nine declared outputs exist and are nonempty. The baseline checks use inclusive bands:
 
 | metric | expected band |
 |---|---|
-| `ent_share_mu_young_only` | `[0.02, 0.15]` |
+| `ent_share_mu_young_only` | `[0.05, 0.12]` |
 | `E_y_under_mu`            | `[0.90, 1.10]` |
+| `mean_assets_mu` | `[3.80, 4.60]` |
+| `final_sum_norm` | `[0, 0.0005)` |
+| `gini` (wealth table) | `[0.64, 0.72]` |
+| `top1`, `top5` (wealth table) | `[0.14, 0.15]`, `[0.36, 0.38]` |
 | `converged`               | `True` |
 
-Exit codes: 0 (pass), 1 (assertion failed), 2 (`summary.csv` not found —
-notebook did not run to completion).
+The baseline counterfactual row must converge. Residuals must be finite and nonnegative. A converged row must have a residual below 0.0005. Other rows can be retained as diagnostics. Exit codes are 0 for success, 1 for a failed numerical check, and 2 for a missing or empty required output.
 
 ---
 
@@ -182,23 +177,22 @@ Figures/Cagetti2005tk/
   convergence.{pdf,png}             # VFI sup-norm history
   values_policies_kstar.{pdf,png}   # value functions + k*(a, theta)
   mu_marginal_assets.{pdf,png}      # young-only stationary distribution
-  wealth_lorenz.{pdf,png}           # Lorenz curve (lower bound)
-  wealth_moments.csv
 
 Tables/Cagetti2005tk/
   summary.csv                # headline scalars (consumed by check script)
   counterfactuals.csv        # comparative-statics sweep
-  wealth_concentration.csv   # gini / top-shares (lower bounds)
+  wealth_concentration.csv   # young-only Gini and top wealth shares
 ```
 
 ---
 
+The two `wealth_lorenz` figures and `wealth_moments.csv` in the figure directory are historical artifacts with unverified generators. The young-only wealth statistics establish no formal bounds on the paper’s full-population moments.
+
 ## What is *not* covered by this architecture
 
-- `Code/HA-Models/`, `Code/Empirical/`, `reproduce/reproduce_data_moments*`,
+- `legacy/Code-HA-Models/`, `legacy/Code-Empirical/`, `reproduce/reproduce_data_moments*`,
   the `--comp` and `--data` HAFiscal flags, `reproduce/docker/setup.sh`:
-  these are upstream-template fossils preserved under their original paths
-  for diff-traceability with the HAFiscal repo. None of them are used by
+  these belong to the historical HAFiscal workflow. The original development notes are in `history/`. None of them are used by
   any reproduction this REMARK claims, and none of them will be invoked
   by the entry points listed above.
 - The full general-equilibrium fixed-point of Cagetti & De Nardi (2006):

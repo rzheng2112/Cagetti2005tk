@@ -2,7 +2,7 @@
 #
 # We deliberately do NOT list project Python dependencies here. The
 # canonical dependency source is pyproject.toml / uv.lock at the repo
-# root; binder/postBuild runs `uv sync --frozen --all-groups` to install
+# root; binder/postBuild runs `uv sync --locked --group jupyter` to install
 # exactly those locked versions. Keeping this file short avoids the
 # classic "binder/environment.yml vs pyproject.toml" drift where the two
 # disagree and Binder silently solves to different numpy/scipy versions
@@ -16,4 +16,4 @@ dependencies:
   - python=3.9
   - pip
   - pip:
-      - uv
+      - uv==0.9.9

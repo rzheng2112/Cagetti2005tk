@@ -1,5 +1,5 @@
 #!/bin/bash
-# HAFiscal Repository Setup Script
+# Historical HAFiscal setup. For Cagetti2005tk use ./reproduce.sh (see README.md).
 #
 # This script fixes executable permissions for shell scripts and Python scripts
 # that may have been lost during git clone on some systems.

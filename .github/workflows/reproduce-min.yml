@@ -40,7 +40,7 @@ concurrency:
 jobs:
   reproduce-min:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 40
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -55,8 +55,11 @@ jobs:
         with:
           version: '0.9.9'
 
+      - name: Clear declared outputs before installation
+        run: python scripts/check_reproduction.py --clean
+
       - name: Sync locked Python environment
-        run: uv sync --frozen --group all
+        run: uv sync --locked --group jupyter
 
       - name: Run the minimal reproduction
         env:
@@ -68,16 +71,20 @@ jobs:
           # pinning here makes the contract explicit at the workflow
           # level.
           MPLBACKEND: Agg
-        run: ./reproduce_min.sh
+        run: ./reproduce.sh
 
-      - name: Upload regenerated reproduction artifacts
+      - name: Upload fresh outputs and diagnostics
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: cagetti2005tk-reproduction-artifacts
           path: |
+            .reproduction/
             Tables/Cagetti2005tk/
-            Figures/Cagetti2005tk/
+            Figures/Cagetti2005tk/convergence.*
+            Figures/Cagetti2005tk/values_policies_kstar.*
+            Figures/Cagetti2005tk/mu_marginal_assets.*
+          include-hidden-files: true
           if-no-files-found: warn
 
       - name: Diff persisted artifacts vs committed snapshot

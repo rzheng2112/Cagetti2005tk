@@ -1,3 +1,5 @@
+> Historical HAFiscal developer setup. See the [project README](../README.md) for Cagetti2005tk.
+
 # Using Cursor with HAFiscal DevContainer (Standalone Mode)
 
 ## Overview

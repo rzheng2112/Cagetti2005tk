@@ -22,7 +22,7 @@
 
 \whenintegrated{\label{abstract}}
 \begin{verbatimwrite}{Cagetti2005tk-Abstract.txt}
-  Cagetti and De Nardi (2006) study how entrepreneurship, borrowing constraints, and bequest motives help explain the high concentration of wealth in the United States. Their model combines a life-cycle household problem with occupational choice: households can work for wages or operate a business, and entrepreneurs choose both saving and business capital while facing an enforcement constraint on borrowing. The original paper calibrates this environment to match key wealth and entrepreneurship moments and finds that entrepreneurs are central for explaining top wealth shares, while tighter borrowing constraints reduce both inequality and aggregate entrepreneurial activity. In this reproduction paper, I focus on the theoretical model rather than the SCF data work or the full general equilibrium calibration. I restate the household problem, decompose the worker and entrepreneur branches, run the existing theory notebook, and compare the notebook's outputs with the benchmark results from the paper.
+  Cagetti and De Nardi (2006) study how entrepreneurship, borrowing constraints, and bequests contribute to wealth concentration in the United States. We solve their household problem at fixed prices. Households choose between wage work and entrepreneurship, and entrepreneurs choose business capital subject to an enforcement constraint. We use the endogenous grid method for consumption and saving. We use a one-sided derivative at the upper asset-grid endpoint. The baseline value iteration meets its stopping rule after 115 iterations. In our young-only distribution, 8.33 percent of households choose entrepreneurship and the wealth Gini is 0.67. The original paper reports 7.5 percent and 0.80 in its full stationary equilibrium. Our distribution excludes aging and inheritance flows, and we take prices and calibrated parameters as given.
 \end{verbatimwrite}
 \begin{abstract}
   \input{Cagetti2005tk-Abstract.txt}
@@ -36,8 +36,7 @@
     \begin{tabbing}
       \texttt{~~~~~~~~~~~~~~~~~~~~~~~} \= \=  \\
       \texttt{~~~~GitHub~Repo:~~~~~~~} \> \> \texttt{\href{https://github.com/\owner/Cagetti2005tk}{https://github.com/\owner/Cagetti2005tk}} \\
-      \texttt{~~~~~~~~~~~~~~~~~html:~} \> \> \texttt{\href{https://\owner.github.io/Cagetti2005tk/}{https://\owner.github.io/Cagetti2005tk/}} \\
-      \texttt{~~~~~~~~~~~~~~~~~~PDF:~} \> \> \texttt{\href{https://github.com/\owner/Cagetti2005tk/blob/master/Cagetti2005tk.pdf}{Cagetti2005tk.pdf}} \\
+      \texttt{~~~~~~~~~~~~~~~~~~PDF:~} \> \> \texttt{\href{https://github.com/\owner/Cagetti2005tk/blob/main/Cagetti2005tk.pdf}{Cagetti2005tk.pdf}} \\
     \end{tabbing}
   }
 \end{footnotesize}
@@ -56,7 +55,7 @@
 \vspace{0.3\baselineskip}
 \begin{minipage}{\textwidth}
   \footnotesize This project follows the course reproduction format and focuses on the theoretical household problem from Cagetti and De Nardi (2006).
-  \input{../@local/acknowledgments.texinput}
+  \input{\latexroot/@local/acknowledgments.texinput}
 \end{minipage}
 
 \titlepagefinish
