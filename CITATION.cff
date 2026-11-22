@@ -5,9 +5,8 @@ message: >-
   If you use this repository, please cite it using the metadata below. When
   referring to the economic model, cite the preferred citation (journal article).
 type: software
-# Development / REMARK-in-progress version; align with pyproject.toml and
-# codemeta.json. A tagged GitHub Release (Step 7) should bump this field.
-version: 0.1.0
+# REMARK-in-progress version; align with pyproject.toml and codemeta.json.
+version: 0.2.0
 authors:
   - given-names: Rudan
     family-names: Zheng

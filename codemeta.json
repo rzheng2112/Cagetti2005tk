@@ -3,7 +3,7 @@
   "@type": "SoftwareSourceCode",
   "name": "Cagetti2005tk",
   "description": "REMARK-in-progress (standard tier): partial-equilibrium reproduction of the household Bellman system in Cagetti & De Nardi (2006), 'Entrepreneurship, Frictions, and Wealth' (Journal of Political Economy 114(5)).",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "keywords": [
     "entrepreneurship",
     "wealth distribution",
