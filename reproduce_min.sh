@@ -3,7 +3,7 @@
 #
 # Supported minimal reproduction path:
 #   1. Bootstrap a local Python environment from pyproject.toml / uv.lock
-#      (activates .venv if present; otherwise runs `uv sync --frozen`).
+#      (runs `uv sync --locked --group jupyter`).
 #   2. Execute the theory-model notebook
 #        Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
 #      which solves the Cagetti & De Nardi (2006) household Bellman
@@ -68,76 +68,33 @@ if [[ ! -f "$CODE_PY/solution.py" || ! -f "$CODE_PY/stages/cons_noshocks.py" ]];
     exit 2
 fi
 
-# --- Environment bootstrap -------------------------------------------------
-# The REMARK standard expects `./reproduce_min.sh` to run from a clean
-# clone on a reviewer's machine, so we must not assume `jupyter` is
-# already on PATH. Preference order:
-#   1. If a project-local .venv already exists, activate it.
-#   2. Else, if `uv` is installed, sync the locked environment.
-#   3. Else, fall back to any `jupyter` already on PATH and tell the
-#      user what they need to install if there is none.
-if ! command -v jupyter >/dev/null 2>&1; then
-    if [[ -f .venv/bin/activate ]]; then
-        echo "Activating existing .venv ..."
-        # shellcheck disable=SC1091
-        source .venv/bin/activate
-    elif command -v uv >/dev/null 2>&1; then
-        echo "No .venv found; running 'uv sync --frozen' to bootstrap ..."
-        uv sync --frozen
-        # shellcheck disable=SC1091
-        source .venv/bin/activate
-    fi
-fi
-
-if ! command -v jupyter >/dev/null 2>&1; then
-    echo "ERROR: 'jupyter' is not on PATH and could not be bootstrapped."
-    echo "Install 'uv' (https://docs.astral.sh/uv/) and re-run this script,"
-    echo "or manually create the environment:"
-    echo "    uv sync && source .venv/bin/activate"
-    echo "or:"
-    echo "    conda env create -f environment.yml && conda activate cagetti2005tk"
-    exit 3
-fi
-
-echo "Executing notebook in place (this does not modify your source cells;"
-echo "it only refreshes cached outputs)..."
-echo ""
-# Pin REPO_ROOT discovery for the notebook (cell 4 honors this env var as
-# the highest-priority source of truth, instead of walking Path.cwd().parents).
+# Install the computational dependencies recorded in uv.lock.
+command -v uv >/dev/null || { echo "ERROR: Install uv before reproducing." >&2; exit 3; }
+[[ -f "$CHECK_SCRIPT" ]] || { echo "ERROR: Missing $CHECK_SCRIPT" >&2; exit 2; }
+mkdir -p .reproduction
+echo "Execution log: $REPO_ROOT/.reproduction/run.log"
+exec > .reproduction/run.log 2>&1
+uv sync --locked --group jupyter
+PYTHON="$(uv run --no-sync python -c 'import sys; print(sys.executable)')"
 export CAGETTI_REPO_ROOT="$REPO_ROOT"
-# Per-cell timeout: 600s (10 minutes). The slowest cell on a recent laptop
-# is the comparative-statics sweep (~5 minutes); 600s is comfortably above
-# that while still failing loudly if a cell hangs (e.g. a regression that
-# turns the Jacobi VFI into an infinite loop). The previous 1800s setting
-# masked precisely the kind of regression the post-run check is meant to
-# catch.
-jupyter nbconvert \
-    --to notebook \
-    --execute \
-    --inplace \
-    --ExecutePreprocessor.timeout=600 \
-    "$NOTEBOOK"
-
-echo ""
-echo "-----------------------------------------------------------------"
-echo "Running numerical-target checks ..."
-echo "-----------------------------------------------------------------"
-if [[ -f "$CHECK_SCRIPT" ]]; then
-    python3 "$CHECK_SCRIPT"
-else
-    echo "WARN: $CHECK_SCRIPT not found; skipping post-run assertions."
-fi
-
-echo ""
-echo "================================================================="
-echo "Minimal reproduction complete."
-echo "================================================================="
-echo "Refreshed: $NOTEBOOK"
-echo ""
-echo "Next steps:"
-echo "  - Inspect the persisted artifacts:"
-echo "      Figures/Cagetti2005tk/   (PDF + PNG plots)"
-echo "      Tables/Cagetti2005tk/    (summary.csv, counterfactuals.csv, ...)"
-echo "  - Open the notebook in Jupyter to explore value functions,"
-echo "    occupational branches, and the entrepreneur-share comparison."
-echo "  - Build the main document: ./reproduce.sh --docs main"
+export MPLBACKEND=Agg
+# An isolated kernelspec prevents a user-installed python3 kernel taking precedence.
+KERNEL_DIR="$(mktemp -d)"
+trap 'rm -rf "$KERNEL_DIR"' EXIT
+"$PYTHON" -m ipykernel install --prefix "$KERNEL_DIR" --name cagetti-locked
+export JUPYTER_PATH="$KERNEL_DIR/share/jupyter${JUPYTER_PATH:+:$JUPYTER_PATH}"
+"$PYTHON" - "$KERNEL_DIR" <<'PYTHON_CHECK'
+import json, pathlib, sys
+spec = json.loads((pathlib.Path(sys.argv[1]) / "share/jupyter/kernels/cagetti-locked/kernel.json").read_text())
+assert pathlib.Path(spec["argv"][0]).resolve() == pathlib.Path(sys.executable).resolve()
+print("Notebook kernel interpreter:", sys.executable)
+PYTHON_CHECK
+# Remove only outputs with verified generators. Historical Lorenz artifacts remain.
+"$PYTHON" "$CHECK_SCRIPT" --clean
+# The sweep took 394 seconds locally. Allow 3x that time on hosted runners.
+"$PYTHON" -m nbconvert --to notebook --execute \
+    --output-dir .reproduction --output executed.ipynb \
+    --ExecutePreprocessor.kernel_name=cagetti-locked \
+    --ExecutePreprocessor.timeout=1200 "$NOTEBOOK"
+"$PYTHON" "$CHECK_SCRIPT"
+echo "Reproduction complete. Logs and executed notebook: .reproduction/"

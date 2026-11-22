@@ -14,11 +14,11 @@
 \section{Reproduction Results and Discussion}
 \whenintegrated{\label{sec:comparing}}
 
-This section compares the notebook results with the benchmark results in Cagetti and De Nardi (2006). The comparison has to be careful because my notebook solves a fixed-price household problem and uses a young-only stationary distribution diagnostic. The original paper solves a full stationary general equilibrium with young and old households, bequests, market clearing, and calibration to data moments. Therefore, I treat the notebook results as a partial reproduction of the theory mechanism, not as a full replication of the quantitative tables.
+We compare our fixed-price household solution and young-only distribution with the published benchmarks. Cagetti and De Nardi compute their moments in a stationary general equilibrium with young and old households, bequests, and market clearing.
 
 \subsection{Convergence and Computation}
 
-The first result is that the value-function iteration now converges. Figure~\ref{fig:convergence} shows the total update norm and the separate update norms for the main value functions. The notebook reaches the stopping rule after 115 iterations, with a final sum norm of $4.78\times 10^{-4}$ against a tolerance of $5.0\times 10^{-4}$. This is important because the later occupational-choice and distribution results are based on a converged fixed-price solution rather than on an unfinished iterate.
+Figure~\ref{fig:convergence} shows the update norms for the baseline household problem. The baseline meets the stopping rule after 115 iterations. The final sum of the three update norms is $4.75\times 10^{-4}$, below the tolerance of $5.0\times 10^{-4}$.
 
 \begin{figure}[htbp]
   \centering
@@ -27,53 +27,55 @@ The first result is that the value-function iteration now converges. Figure~\ref
   \whenintegrated{\label{fig:convergence}}
 \end{figure}
 
-The enforcement constraint is active in the computation. In the baseline run, all entrepreneurial candidate points are feasible in the resource sense, but only about 12.9 percent of young entrepreneur candidates pass the repayment-versus-default check. For old entrepreneurs the enforcement pass rate is about 67.0 percent. This difference is economically sensible: old high-ability entrepreneurs in the solved grid have a stronger incentive to continue operating firms, while many young households still find the worker branch more attractive.
+The enforcement constraint is active in the computation. In the baseline run, all entrepreneurial candidate points are feasible in the resource sense, but only about 12.9 percent of young entrepreneur candidates pass the repayment-versus-default check. For old entrepreneurs the enforcement pass rate is about 67.0 percent. These rates count candidate capital choices before the household compares occupations.
 
 \subsection{Value Functions and Policy Functions}
 
-Figure~\ref{fig:values-policies-kstar} summarizes the most useful model objects from the notebook. The top-left panel compares the young worker value $V_w$ and young entrepreneur value $V_e$ for high entrepreneurial ability and middle labor productivity. The entrepreneur value is very low at the borrowing-constrained end of the grid, which reflects the difficulty of running a firm with too little collateral. At higher assets, the occupational envelope becomes much closer, and the branch choice is determined by the comparison between the worker outside option and entrepreneurial returns.
+The top-left panel of Figure~\ref{fig:values-policies-kstar} compares the young worker and entrepreneur values at high entrepreneurial ability and middle labor productivity. Where no capital choice satisfies both the resource and enforcement conditions, only wage work is feasible. Elsewhere, the household chooses the branch with the higher value.
 
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.92\textwidth]{values_policies_kstar}
-  \caption{Value functions, saving policies, occupational choice, and entrepreneurial investment from the notebook.}
+  \caption{Value functions, saving policies, occupational choice, and entrepreneurial investment. The young entrepreneur curve omits states with no feasible capital choice. In the bottom-right panel, yellow marks entrepreneurship and purple marks wage work. Bands meet halfway between adjacent asset points.}
   \whenintegrated{\label{fig:values-policies-kstar}}
 \end{figure}
 
 The top-right panel shows that old high-ability entrepreneurs prefer continuing entrepreneurship over retirement throughout the plotted asset grid. This matches the intuition of the original paper: once a high-ability entrepreneur has access to the business technology, continuing can be valuable because entrepreneurial returns are high relative to the safe return.
 
-The middle panels show next-period asset policies for workers and retirees. Both policies are below the 45-degree line at high assets in the plotted range, which means households do not keep increasing assets one-for-one forever. This is partly due to the finite grid and fixed-price setting. The bottom-left panel shows the entrepreneurial capital choice $k^\star$. The old entrepreneur reaches a high business scale more quickly, while the young entrepreneur's $k^\star$ rises with assets and then flattens near the upper part of the discrete $k$ grid. This is exactly the mechanism I wanted the reproduction to show: assets relax the ability to operate a larger firm, but the enforcement constraint and the discrete capital grid limit the feasible scale.
+The middle panels show next-period asset policies for workers and retirees. Both policies are below the 45-degree line at high assets in the plotted range, so next-period assets are below current assets at those grid points. The bottom-left panel shows the entrepreneurial capital choice $k^\star$. The old entrepreneur reaches a high business scale more quickly, while the young entrepreneur's $k^\star$ rises with assets and then flattens near the upper part of the discrete $k$ grid. Assets relax the ability to operate a larger firm, but two numerical and economic limits matter: the enforcement constraint and the discrete capital-grid ceiling $k_{\max}=18$. In the baseline run, 14 of 56 young entrepreneurial grid states and 6 of 80 old entrepreneurial grid states sit at that ceiling, so capital choice is not determined by enforcement alone.
 
-The bottom-right panel is the clearest occupational-choice picture. With zero entrepreneurial ability, nobody chooses entrepreneurship. With high entrepreneurial ability, the probability of choosing entrepreneurship is higher for lower labor productivity states and higher assets. In the current run, the share of the asset grid where $V_e\geq V_w$ is 28.7 percent for the lowest labor productivity state and 5.0 percent for the highest labor productivity state. This makes economic sense because high labor productivity raises the worker outside option.
+The bottom-right panel shows the young household's occupational choice at each asset and labor productivity state for high entrepreneurial ability. Higher labor productivity raises the value of wage work, while higher assets can make entrepreneurship feasible. At the lowest labor productivity, entrepreneurship is selected at 23 of the 80 asset points, compared with 4 of 80 at the highest productivity. These fractions give each grid point equal weight.
 
 \subsection{Comparison with the Original Paper}
 
-Table~\ref{tab:paper-vs-reproduction} compares the notebook's main numerical outputs with the original paper's benchmark model results. The entrepreneur share is the closest comparison. The original paper reports 7.5 percent entrepreneurs in the baseline model, and the notebook's young-only distribution gives 8.25 percent. This is close enough to show that the occupational-choice mechanism is working in the right range.
+Table~\ref{tab:paper-vs-reproduction} compares the authors' full-equilibrium benchmarks with our fixed-price, young-only statistics. Mean household assets and the aggregate capital-output ratio measure different quantities. We report mean assets and leave the capital-output ratio uncomputed.
 
 \begin{table}[htbp]
   \centering
   \caption{Benchmark Results and Current Reproduction Outputs}
   \whenintegrated{\label{tab:paper-vs-reproduction}}
-  \begin{tabular}{p{0.23\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.31\textwidth}}
+  \begin{tabular}{lrr}
     \hline\hline
-    Moment & Original paper baseline & Notebook output & Interpretation \\
+    Moment & Original paper & Our reproduction \\
     \hline
-    Entrepreneur share & 7.50\% & 8.25\% & Close in the fixed-price, young-only diagnostic \\
-    Wealth Gini & 0.80 & 0.62 & Too low because full demographic wealth accumulation is not reproduced \\
-    Top 1\% wealth share & 31\% & 6.10\% & Far below paper; upper tail is missing \\
-    Top 5\% wealth share & 60\% & 27.78\% & Below paper; young-only kernel understates concentration \\
-    Capital-output ratio & 3.0 & Not reproduced & Requires general equilibrium aggregation \\
+    Entrepreneur share & 7.50\% & 8.33\% \\
+    Wealth Gini & 0.80 & 0.67 \\
+    Top 1\% wealth share & 31\% & 14.36\% \\
+    Top 5\% wealth share & 60\% & 36.89\% \\
+    Mean assets & --- & 4.18 \\
+    Capital-output ratio & 3.0 & Not reproduced \\
     \hline
   \end{tabular}
 \end{table}
+\FloatBarrier
 
-The comparison shows both success and limitation. The success is that the notebook reproduces the branch structure well enough to generate an entrepreneur share near the paper's baseline. It also reproduces the qualitative occupational-choice logic: high entrepreneurial ability and sufficient assets make entrepreneurship more attractive, while high labor income makes wage work more attractive.
 
-The limitation is the wealth distribution. The notebook's wealth Gini is 0.62 and its top 1 percent wealth share is only 6.1 percent, far below the paper's baseline values. I do not interpret this as evidence against the original model. Instead, it reflects the narrower reproduction. The original paper's wealth concentration comes from the full distribution over ages, entrepreneurs, retirees, and dynasties, combined with general equilibrium and calibration. My notebook uses only a young-only diagnostic distribution, so it does not yet include the full bequest and old-age wealth accumulation channels that are important for the upper tail.
+
+Our young-only distribution has a lower Gini and smaller top wealth shares than the paper's baseline. It excludes aging and inheritance flows and gives no formal bound on concentration in the full population.
 
 \subsection{Stationary Distribution Diagnostic}
 
-Figure~\ref{fig:mu-marginal-assets} reports the young-only distribution diagnostic. The right panel shows that the distribution iteration itself converges smoothly. The left panel shows mass both near zero assets and near the upper part of the grid. This tells me that the policy rules are moving households through the asset grid in a stable way. However, it also shows why the distribution comparison is limited. The diagnostic distribution is shaped by the truncated asset grid and does not include the full demographic status dimension, so it cannot fully reproduce the paper's top wealth shares.
+Figure~\ref{fig:mu-marginal-assets} shows mass near both ends of the asset grid in the young-only distribution. The right panel shows convergence of the distribution iteration for this kernel.
 
 \begin{figure}[htbp]
   \centering
@@ -82,9 +84,7 @@ Figure~\ref{fig:mu-marginal-assets} reports the young-only distribution diagnost
   \whenintegrated{\label{fig:mu-marginal-assets}}
 \end{figure}
 
-The partial-equilibrium counterfactuals in the notebook should also be read cautiously. Some one-at-a-time changes, such as raising the interest rate to 7.5 percent or changing the pension share, converge and leave the middle-productivity young entrepreneurship region close to the baseline. Other changes, such as shutting down the bequest motive or increasing high entrepreneurial ability, do not converge within the shortened counterfactual iteration cap. I therefore use these rows only as diagnostics, not as reproduced versions of the paper's counterfactual tables.
-
-Overall, the reproduction is strongest on the household problem and weaker on the aggregate distribution. It succeeds at organizing the model, solving the baseline fixed-price problem, and showing the occupational-choice mechanism. It does not yet reproduce the full wealth-concentration result, because that requires the full stationary equilibrium and demographic distribution.
+The partial-equilibrium counterfactuals in the notebook should also be read cautiously. Some one-at-a-time changes, such as raising the interest rate to 7.5 percent or changing the pension share, converge and leave the middle-productivity young entrepreneurship region close to the baseline. Four scenarios remain nonconverged after 500 iterations with large residuals: $\tau=0.12$, $\theta_{\mathrm{high}}=0.55$, $\eta=0$, and $(\eta=0,\beta=0.88)$. We treat those rows only as numerical diagnostics, not as valid comparative-static solutions or as reproductions of the paper's Table~7 experiments. The $n_k=35$ experiment uses a uniform capital grid on $[10^{-5},k_{\max}]$, not a denser version of the baseline hybrid grid.
 
 \smartbib
 

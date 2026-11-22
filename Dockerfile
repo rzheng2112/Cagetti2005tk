@@ -46,11 +46,11 @@ USER ${NB_USER}
 ENV PATH="/home/${NB_USER}/.local/bin:${PATH}"
 
 # Install uv (fast, deterministic Python env manager) and sync the locked
-# project environment from pyproject.toml + uv.lock. We use --frozen so a
+# project environment from pyproject.toml + uv.lock. We use --locked so a
 # stale lockfile fails the build instead of silently resolving a different
 # numpy/scipy/etc.
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh \
-    && uv sync --frozen --all-groups
+RUN curl -LsSf https://astral.sh/uv/0.9.9/install.sh | sh \
+    && uv sync --locked --group jupyter
 
 # Make the venv's python/jupyter the default for non-login shells.
 ENV VIRTUAL_ENV="/home/${NB_USER}/work/.venv"
@@ -59,4 +59,4 @@ ENV PATH="${VIRTUAL_ENV}/bin:${PATH}"
 # Default invocation: run the supported minimal reproduction. Override
 # with e.g. `docker run --rm -it cagetti2005tk bash` to drop into a shell
 # or with `... jupyter notebook --ip=0.0.0.0` to explore interactively.
-CMD ["./reproduce_min.sh"]
+CMD ["./reproduce.sh"]

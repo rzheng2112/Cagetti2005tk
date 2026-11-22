@@ -1,3 +1,5 @@
+> Historical HAFiscal template documentation. For the Cagetti2005tk reproduction, see the [project README](../README.md).
+
 ### Figures
 
 #### Figure 1 - Model fit to spending behavior and wealth distribution

@@ -31,3 +31,14 @@ do "$latexmkroot/\@resources/latexmk/latexmkrc/latexmkrc_env_variable_injection"
 # Load PDF viewer management (quit viewers before compilation)
 do "$latexmkroot/.latexmkrc_quit-pdf-viewers-on-latexmk_-c";
 # DEBUGGED: 20250904-1813h PDF viewer management infrastructure completed - enhanced performance, cross-platform compatibility
+
+# --- Cagetti2005tk: space-safe BibTeX ---
+# circular-crossrefs loads latexmkrc_using_bibtex_wrapper, which used to set
+#   $bibtex = "sh $latexmkroot/@resources/.../bibtex_wrapper.sh ..."
+# without quoting. Paths containing spaces (e.g. "ECON 606") then fail, leave
+# an empty .bbl, and latexmk sticks on "bibtex ... gave an error in previous
+# invocation" / "Nothing to do". Use system bibtex and ship BSTINPUTS so
+# econark.bst resolves from the repo.
+ensure_path('BSTINPUTS', "$latexmkroot/\@resources/texlive/texmf-local/bibtex/bst");
+ensure_path('BIBINPUTS', $latexmkroot);
+$bibtex = 'bibtex %O %S';

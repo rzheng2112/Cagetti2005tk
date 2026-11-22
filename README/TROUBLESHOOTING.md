@@ -1,3 +1,5 @@
+> Historical HAFiscal template documentation. For the Cagetti2005tk reproduction, see the [project README](../README.md).
+
 # HAFiscal Troubleshooting Guide
 
 This guide helps resolve common issues when installing or running HAFiscal.

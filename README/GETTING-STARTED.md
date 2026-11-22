@@ -1,3 +1,5 @@
+> Historical HAFiscal template documentation. For the Cagetti2005tk reproduction, see the [project README](../README.md).
+
 # Getting Started with HAFiscal
 
 **Welcome!** This guide will help you get started with the HAFiscal replication package. Follow the steps below based on what you want to accomplish.

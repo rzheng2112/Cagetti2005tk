@@ -1,27 +1,6 @@
 #!/bin/bash
-# Binder post-build hook for Cagetti2005tk.
-#
-# binder/environment.yml only bootstraps python + uv; the actual project
-# dependencies are installed here from the repo-root pyproject.toml /
-# uv.lock so the Binder session matches the locked local environment.
-
 set -euo pipefail
-
-# Prime the matplotlib font cache so first-plot latency is hidden inside
-# the build instead of surprising the user at notebook runtime.
-python -c "import matplotlib as mpl; mpl.use('Agg'); import pylab as plt; fig, ax = plt.subplots(); fig.savefig('test.png')"
-test -e test.png && rm test.png
-
-# Install the locked project environment.
-#
-# We explicitly install the `all` dependency group (jupyter + analysis +
-# dev) and explicitly opt OUT of the optional `legacy` group, which is
-# the heavy HAFiscal-only stack (econ-ark, sequence-jacobian, numba) and
-# is not needed for ./reproduce_min.sh.
-if command -v uv >/dev/null 2>&1; then
-    echo "Installing locked project dependencies with uv sync --frozen --group all"
-    uv sync --frozen --group all
-else
-    echo "uv is not on PATH after conda env create; falling back to pip."
-    pip install -e .
-fi
+cd "$(dirname "$0")/.."
+uv sync --locked --group jupyter
+uv run --no-sync python -m ipykernel install --user --name cagetti-locked --display-name "Cagetti2005tk (locked)"
+uv run --no-sync python -c "import matplotlib; matplotlib.use('Agg'); import matplotlib.pyplot as plt; plt.figure(); plt.close()"

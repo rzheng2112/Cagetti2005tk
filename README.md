@@ -1,109 +1,215 @@
 # Cagetti2005tk
 
-Public course-project repository on **Cagetti and De Nardi (2006)**, *Entrepreneurship, Frictions, and Wealth*. It contains the LaTeX write-up, supporting material, and notebooks used in the assignment.
+Partial computational reproduction of **Cagetti and De Nardi (2006)**,
+*Entrepreneurship, Frictions, and Wealth*, packaged as an Econ-ARK
+**REMARK-in-progress** (target: Tier 2 documentation and local
+reproducibility). This repository is a course project; it is **not** an
+officially accepted Econ-ARK catalog entry.
 
 [![Powered by Econ-ARK](./@resources/econ-ark/PoweredByEconARK.svg)](https://econ-ark.org)
 
 ---
 
-## Reference paper
+## Research question and paper
 
-Marco Cagetti and Mariacristina De Nardi (2006), “Entrepreneurship, Frictions, and Wealth,” *Journal of Political Economy*, 114(5), 835–870. [DOI: 10.1086/508032](https://doi.org/10.1086/508032).
+Marco Cagetti and Mariacristina De Nardi (2006) ask how entrepreneurial
+ability, borrowing constraints, and bequest motives shape occupational
+choice and the wealth distribution. The published article is
 
-The repository name follows the working-paper year, while the published article appeared in **2006**.
+> Cagetti, M. and De Nardi, M. (2006), “Entrepreneurship, Frictions, and
+> Wealth,” *Journal of Political Economy*, 114(5), 835–870.
+> [DOI: 10.1086/508032](https://doi.org/10.1086/508032).
 
----
-
-## Repository structure
-
-| Path | Role |
-|------|------|
-| `Cagetti2005tk.tex`, `Cagetti2005tk.bib`, `Cagetti2005tk-Add-Refs.bib` | Main document and bibliographies |
-| `Subfiles/` | Sections of the write-up |
-| `Figures/`, `Tables/`, `images/` | Figures and tables |
-| `Cagetti2005tk_material/` | Jupyter notebooks and MyST config (`myst.yml`) |
-| `reproduce/` | Scripts used by `reproduce.sh` |
-| `Code/` | Computational code (large tree; optional for the write-up) |
-| `@local/`, `@resources/` | LaTeX paths and shared resources |
-| `pyproject.toml`, `environment.yml`, `binder/` | Python / Binder / conda configuration |
+The repository name uses the working-paper year (**2005**); the journal
+version is **2006**. Cite the journal article for the economic model, and
+this repository (see `CITATION.cff`) for the reproduction code.
 
 ---
 
-## Environment / installation
+## What this REMARK actually reproduces
 
-**Python and notebooks:** Use **`uv`** with `pyproject.toml` as described in the header of `environment.yml` (for example, `uv sync` and then activate the project environment), or use **Conda** with `conda env create -f environment.yml` and activate the environment defined there.
+Supported path: fixed-price household Bellman system (paper eqs. 2–14) at
+the paper’s calibrated structural parameters (Table 5), solved by damped
+value-function iteration with an Endogenous Grid Method (EGM)
+consumption stage from SolvingMicroDSOPs (`Code/Python/`). Each sweep updates the retiree, worker, old entrepreneur, and young entrepreneur branches in that order before damping the outer values.
 
-**LaTeX:** Install a current TeX distribution (for example, TeX Live) with standard packages for `pdflatex`, `bibtex`, and the Econ-ARK-style class files used by this project.
+| Included | Not included |
+|----------|--------------|
+| Young worker / entrepreneur occupational choice | General-equilibrium price clearing (Appendix B) |
+| Old entrepreneur / retiree continuation | Full demographic stationary distribution |
+| Enforcement / collateral constraint on \(k\) | Budget-balanced payroll tax / pension fixed point |
+| Young-only \(\mu\) diagnostic | Formal match to paper Table 6 / Table 7 GE moments |
+| PE comparative-static re-solves | Estate taxation (unused extension parameter) |
 
-**Binder:** Configuration is provided under `binder/` for an optional cloud environment.
+We take the net interest rate (0.065) from the paper’s Table 7 baseline and normalize the wage to one.
+\(\tau = 0.10\) is illustrative. Wealth Gini and top shares from the
+young-only kernel are **PE diagnostics**, not paper Table 6 moments and
+not formal lower bounds on the GE distribution.
 
 ---
 
-## How to run
+## Baseline results
 
-### Minimal computational reproduction (~8–12 minutes on a recent laptop)
+The baseline uses the stationary distribution of young households.
 
-From the repository root:
+| Metric | Value |
+|--------|------:|
+| VFI iterations (converged) | 115 |
+| Final sum-norm | \(4.75\times10^{-4}\) |
+| Entrepreneur share (young-only \(\mu\)) | 0.083286 |
+| Mean assets | 4.179171 |
+| Wealth Gini (young-only PE) | 0.671421 |
+| Top 1% wealth share (young-only PE) | 0.143569 |
+
+Paper Table 6 (for comparison only): entrepreneur share \(\approx 0.075\),
+wealth Gini \(\approx 0.80\). Differences reflect scope (PE, young-only,
+numerical grids), not a single identified mechanism.
+
+---
+
+## Numerical methods and known limitations
+
+- **EGM.** Shock-free consumption stages use `solve_cons_noshocks`. Marginal
+  continuation value on the multi-exponential asset grid uses first-order
+  one-sided endpoint differences and irregular-grid central differences
+  (equivalent to `np.gradient(..., edge_order=1)`). Do not revert to
+  `edge_order=2` on this grid.
+- **Capital grid.** Entrepreneurial \(k\) is chosen on a discrete hybrid
+  grid with ceiling `k_max = 18`. Enforcement and the numerical ceiling
+  can both bind (about 14/56 young and 6/80 old entrepreneurial states at
+  the ceiling in the baseline).
+- **Residual EGM gaps.** Small objective gaps \(O(10^{-3})\) can remain on
+  coarse upper-grid nodes; they are far smaller than the pre-fix
+  upper-boundary failure.
+- **Counterfactuals.** Some PE re-solves hit `max_iter` with large
+  residuals (`converged=False` in `counterfactuals.csv`). Those rows are
+  diagnostics only, not valid comparative statics. The 35-point \(k\)
+  experiment is a **uniform** grid over \([10^{-5}, k_{\max}]\), not a
+  denser version of the hybrid grid.
+
+---
+
+## How to reproduce
+
+### Requirements
+
+- [`uv`](https://docs.astral.sh/uv/) (installs the locked Python 3.9
+  environment from `pyproject.toml` / `uv.lock`)
+- Optional: TeX Live (only for `./reproduce.sh --docs main`)
+
+### Minimal computational reproduction (~8–12 minutes)
 
 ```bash
+git clone https://github.com/rzheng2112/Cagetti2005tk.git
+cd Cagetti2005tk
 ./reproduce.sh
 ```
 
-This is a thin wrapper that delegates to `./reproduce_min.sh`, which executes the theory-model reproduction notebook
+Bare `./reproduce.sh` delegates to `./reproduce_min.sh`, which:
 
+1. Runs `uv sync --locked --group jupyter`
+2. Installs an isolated Jupyter kernel bound to the project interpreter
+3. Executes `Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb`
+4. Runs `scripts/check_reproduction.py` on the persisted tables
+
+The source notebook is stored without execution outputs. Running the
+reproduction writes the executed notebook and log under `.reproduction/`.
+The figures and tables listed below are also available in the repository.
+
+Equivalent:
+
+```bash
+./reproduce_min.sh
 ```
-Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb
-```
 
-and then runs `scripts/check_reproduction.py` to assert numerical bands on `Tables/Cagetti2005tk/summary.csv`.
-
-The notebook re-states the Cagetti and De Nardi (2006) household Bellman system (equations 2–14) and solves it at the paper's calibrated structural parameters in a fixed-price environment, using the SolvingMicroDSOPs stage package. It is the supported minimal computational reproduction for this REMARK.
-
-The notebook imports `solution` and `stages.cons_noshocks` from `Code/Python/`. `reproduce_min.sh` checks that those files are present and exits with an explanatory error if they are not, so that a failed minimal reproduction is never silent. Most of the wall time is spent on the comparative-statics sweep in notebook cell 19; the baseline VFI itself converges in ~115 sweeps.
-
-### Main LaTeX document (optional)
-
-To build `Cagetti2005tk.pdf`:
+### Optional LaTeX write-up
 
 ```bash
 ./reproduce.sh --docs main
 ```
 
-Or, directly with a TeX toolchain from the repository root:
+This builds `Cagetti2005tk.pdf` and is **not** part of the minimal
+computational path.
 
-```bash
-pdflatex Cagetti2005tk.tex
-bibtex   Cagetti2005tk
-pdflatex Cagetti2005tk.tex
-pdflatex Cagetti2005tk.tex
-```
+### Checks
 
-If you use `latexmk` (for example via the bundled `.latexmkrc`), you can compile with that instead.
-
-The LaTeX build is **not** part of the supported minimal reproduction path; the bare `./reproduce.sh` does not invoke it (the REMARK catalog tooling does not assume a TeX Live install in the reviewer's environment).
-
-### Legacy HAFiscal scripts
-
-The directory layout descends from the upstream HAFiscal REMARK template. The original 2528-line HAFiscal `reproduce.sh` (with its `--comp` / `--data` / `--envt` pipelines) is preserved unmodified at `legacy/reproduce.sh.hafiscal` for cross-reference, but it is **not** invoked from the current `reproduce.sh` and produces no Cagetti2005tk results.
-
-### Other notebooks
-
-The remaining notebooks under `Cagetti2005tk_material/` (intro, prior literature, summary, subsequent literature, Bellman-stages write-up) are narrative companions to the paper, not reproduction artifacts; they can be opened directly in Jupyter after activating your Python environment.
+`scripts/check_reproduction.py` asserts bands around the corrected
+baseline (entrepreneur share, mean assets, \(E[y]\), VFI residual,
+convergence, young-only Gini, and top 1% and 5% wealth shares) and checks that any counterfactual row
+marked `converged=True` has a finite, nonnegative residual below 0.0005. It does **not** require
+selected scenarios to stay nonconverged.
 
 ---
 
-## Reproducibility notes
+## Supported regenerated outputs
 
-The REMARK-supported reproduction path is `./reproduce_min.sh` (theory-model notebook) plus `./reproduce.sh --docs main` (LaTeX write-up). PDFs and auxiliary outputs can be regenerated from these sources. What is tracked in git follows this repository's `.gitignore` and publishing choices. Large computational trees under `Code/HA-Models/` and `Code/Empirical/` are HAFiscal-inherited and separate from the Cagetti2005tk reproduction path.
+Nine artifacts are produced by the supported notebook and checked for
+presence:
+
+**Tables** (`Tables/Cagetti2005tk/`)
+
+- `summary.csv`
+- `counterfactuals.csv`
+- `wealth_concentration.csv`
+
+**Figures** (`Figures/Cagetti2005tk/`)
+
+- `convergence.{pdf,png}`
+- `values_policies_kstar.{pdf,png}`
+- `mu_marginal_assets.{pdf,png}`
+
+**Historical artifacts without a verified generator in this workflow**
+(preserved, not checked as reproduction outputs):
+
+- `Figures/Cagetti2005tk/wealth_lorenz.{pdf,png}`
+- `Figures/Cagetti2005tk/wealth_moments.csv`
 
 ---
 
-## Current project status
+## Repository map
 
-Course project **Cagetti2005tk**, focused on Cagetti and De Nardi (2006). The write-up is built from `Cagetti2005tk.tex`; notebooks and materials under `Cagetti2005tk_material/` support the analysis.
+| Path | Role |
+|------|------|
+| `Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb` | Supported reproduction notebook |
+| `Code/Python/` | Vendored SolvingMicroDSOPs EGM stage |
+| `scripts/check_reproduction.py` | Post-run numerical / inventory checks |
+| `reproduce_min.sh`, `reproduce.sh` | Minimal runner and thin wrapper |
+| `REMARK.md` | Scope, tier metadata, limitations |
+| `CITATION.cff`, `codemeta.json`, `pyproject.toml` | Citation and project metadata |
+| `binder/`, `Dockerfile` | Binder / container adapters |
+| `Cagetti2005tk.tex`, `Subfiles/` | Course write-up (optional build) |
+| `legacy/` | HAFiscal template material (not this REMARK) |
+
+Narrative notebooks under `Cagetti2005tk_material/` (intro, literature,
+summary, Bellman stages) are companions, not reproduction artifacts.
 
 ---
 
-## Legacy / attribution
+## Environment notes
 
-The directory layout and `reproduce/` tooling descend from the **HAFiscal / Econ-ARK** template. That explains shared script names and optional pipelines; this repository’s **content** centers on the Cagetti–De Nardi (2006) exercise, not the HAFiscal paper.
+Primary environment: **`uv sync --locked --group jupyter`**.
+`binder/environment.yml` is an adapter for Binder / REMARK tooling.
+Conda users can run `conda env create -f binder/environment.yml`, then
+`conda activate cagetti2005tk` and `./reproduce.sh`. LaTeX is optional and separate from the computational path.
+
+Layout descends from the HAFiscal / Econ-ARK template; legacy HAFiscal
+`--comp` / `--data` pipelines are **not** part of Cagetti2005tk
+reproduction (see `legacy/README.md`).
+
+---
+
+## Citation
+
+Software / reproduction repository: see `CITATION.cff` (author Rudan Zheng).
+
+Preferred citation for the economic model: Cagetti and De Nardi (2006),
+JPE, DOI [10.1086/508032](https://doi.org/10.1086/508032).
+
+Repository: <https://github.com/rzheng2112/Cagetti2005tk>
+
+---
+
+## License
+
+Apache-2.0 (see `LICENSE`). Vendored SolvingMicroDSOPs files retain their
+upstream notices (`NOTICES.md`).

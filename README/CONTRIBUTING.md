@@ -1,3 +1,5 @@
+> Historical HAFiscal template documentation. For the Cagetti2005tk reproduction, see the [project README](../README.md).
+
 # Contributing to HAFiscal
 
 ## Contributing to This Repository

@@ -9,7 +9,7 @@
 \section{Income and Entrepreneurial Ability Processes}
 \whenintegrated{\label{sec:appendix-hank}}
 
-We assume that the income process is lognormal and AR(1). We approximate it with a five-point discrete Markov chain, using the method described in \cite{Tauchen1991-oe}.
+Following Cagetti and De Nardi, the income process is lognormal and AR(1), approximated with a five-point discrete Markov chain using the method described in \cite{Tauchen1991-oe}. The notebook uses the same published grid.
 
 The resulting grid points for the vector $\mathbf{y}$ for the income process (normalized to an average of one) are
 \[
@@ -26,7 +26,7 @@ and the transition matrix $\mathbf{P}_y$ is
   \end{bmatrix}.
 \]
 
-We assume that the entrepreneurial ability process is uncorrelated with the income process. The two values for ability $\boldsymbol{\theta}$ are zero (no entrepreneurial ability) and a positive value (0.514), and the transition matrix $\mathbf{P}_\theta$ is
+The entrepreneurial ability process is uncorrelated with the income process in the paper and in the notebook. The two values for ability $\boldsymbol{\theta}$ are zero (no entrepreneurial ability) and a positive value (0.514), and the transition matrix $\mathbf{P}_\theta$ is
 \[
   \mathbf{P}_\theta = \begin{bmatrix}
     .964 & .036 \\
@@ -36,14 +36,14 @@ We assume that the entrepreneurial ability process is uncorrelated with the inco
 
 \subsection{Correlation between Abilities}
 
-We have assumed that working ability ($y$) and entrepreneurial ability ($\theta$) are uncorrelated. One important piece of evidence in favor of this specification is that we replicate fairly well the income of entrepreneurs prior to starting their businesses. Using the PSID, the labor earnings over the previous five years of those who enter entrepreneurship in a given period are 1.32 times the labor income during the previous five years of those who choose to remain workers. Our simulations reproduce this feature: the ratio is 1.35. This correlation arises endogenously because of borrowing constraints---among the high-entrepreneurial ability workers, those who receive high labor earnings realizations can save more and are more likely to enter entrepreneurship.
+Cagetti and De Nardi assume that working ability ($y$) and entrepreneurial ability ($\theta$) are uncorrelated. One important piece of evidence they report in favor of this specification is that their model reproduces fairly well the income of entrepreneurs prior to starting their businesses. Using the PSID, the labor earnings over the previous five years of those who enter entrepreneurship in a given period are 1.32 times the labor income during the previous five years of those who choose to remain workers. In the original authors' simulations the corresponding model ratio is 1.35. This correlation arises endogenously because of borrowing constraints---among the high-entrepreneurial ability workers, those who receive high labor earnings realizations can save more and are more likely to enter entrepreneurship. Our notebook keeps the uncorrelated ability processes from the paper; it does not re-estimate this PSID moment.
 
-As a robustness check, we study the effects of allowing for positive correlation of 0.4 between the two ability processes. The resulting wealth distribution is close to the benchmark: the richest 1 percent hold 33 percent of the total wealth. The main difference is that the number of entrepreneurs decreases to 5.2 percent because people with high entrepreneurial ability tend to have a higher option value of remaining in the nonentrepreneurial sector.
+As a robustness check, the original paper studies the effects of allowing for positive correlation of 0.4 between the two ability processes. In that exercise, the resulting wealth distribution is close to their benchmark: the richest 1 percent hold 33 percent of the total wealth. The main difference is that the number of entrepreneurs decreases to 5.2 percent because people with high entrepreneurial ability tend to have a higher option value of remaining in the nonentrepreneurial sector. We report this robustness discussion for completeness; it is not part of our fixed-price notebook reproduction.
 
 \section{The Algorithm}
 \whenintegrated{\label{sec:appendix-algorithm}}
 
-The algorithm proceeds as follows:
+The original paper's GE solution algorithm proceeds as follows:
 \begin{itemize}
   \item Construct a grid for the state variables. The maximum asset level is chosen so that it is not binding.
   \item Fix a tax rate $\tau$, an interest rate $r$, and a wage rate $w$. Taking these as given, solve for the value functions using value function iteration.
@@ -53,7 +53,9 @@ The algorithm proceeds as follows:
   \item Compute the social security system imbalance and iterate on $\tau$ until outlays equal revenues.
 \end{itemize}
 
-The computation of the value functions is nonstandard because of the endogenous borrowing constraints. For each state $\mathbf{x}$, the endogenous constraint specifies a maximum amount $k(\mathbf{x})$ that can be borrowed, but this function depends on the value functions themselves. We initialize $\hat{k}(\mathbf{x}) = k_{\max}$, solve the value functions conditional on this constraint, then update $\hat{k}(\mathbf{x})$ by finding the maximum investment for which the entrepreneur would not default, and iterate until $\hat{k}$ converges.
+Our notebook implements only the fixed-price household block (the second bullet), together with a young-only distribution diagnostic. It does not close the GE loops over prices or $\tau$.
+
+In the original paper, the computation of the value functions is nonstandard because of the endogenous borrowing constraints. For each state $\mathbf{x}$, the endogenous constraint specifies a maximum amount $k(\mathbf{x})$ that can be borrowed, but this function depends on the value functions themselves. The authors initialize $\hat{k}(\mathbf{x}) = k_{\max}$, solve the value functions conditional on this constraint, then update $\hat{k}(\mathbf{x})$ by finding the maximum investment for which the entrepreneur would not default, and iterate until $\hat{k}$ converges. The notebook instead searches over a discrete $k$ grid and keeps only enforcement-feasible candidates, subject also to the numerical ceiling $k_{\max}=18$.
 
 \smartbib
 

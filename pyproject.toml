@@ -5,7 +5,7 @@
 
 [project]
 name = "cagetti2005tk"
-version = "0.1.0"
+version = "0.2.0"
 description = "REMARK: partial-equilibrium reproduction of Cagetti & De Nardi (2006), 'Entrepreneurship, Frictions, and Wealth'."
 requires-python = ">=3.9,<3.10"
 authors = [

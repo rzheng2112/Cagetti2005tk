@@ -1,3 +1,5 @@
+> Historical HAFiscal template documentation. For the Cagetti2005tk reproduction, see the [project README](../README.md).
+
 # HAFiscal Reproduction Scripts Directory
 
 This directory contains all scripts needed to reproduce the HAFiscal paper's computational results and LaTeX documents. The scripts are organized by function and designed to work together as part of the main `reproduce.sh` workflow.

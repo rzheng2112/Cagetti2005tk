@@ -6,7 +6,7 @@
 \section{Parameter Organization}
 \whenintegrated{\label{sec:parameters}}
 
-The parameter section in this reproduction has a limited purpose. I do not re-estimate the model and I do not clean the SCF data used in the original calibration. Instead, I organize the parameters that the notebook takes as inputs. This makes it clear which objects come from the paper's calibration and which objects are numerical choices needed to solve the fixed-price household problem.
+We take the structural parameters from Cagetti and De Nardi's calibration. We specify prices and policy inputs separately from the grids and tolerances used to solve the household problem. We do not re-estimate the parameters or reconstruct the SCF data.
 
 \begin{table}[htbp]
   \centering
@@ -42,9 +42,9 @@ The parameter section in this reproduction has a limited purpose. I do not re-es
 
 The first group is the economically meaningful parameter block. These are the parameters that define preferences, technology, demographics, ability processes, and the enforcement friction. The notebook's \texttt{PaperStructuralParams} class keeps these objects in one place so that a reader can connect the code back to the Bellman equations.
 
-The second group is specific to the current reproduction. The notebook works at fixed prices, using an interest rate close to the paper's baseline solved economy and normalizing wages. The payroll tax and pension rule are included because they appear in the worker and retiree budget constraints, but the notebook does not solve for the social-security budget balance. This is why I treat $\tau$ as an input rather than as a reproduced equilibrium outcome.
+The second group is specific to the current reproduction. The notebook works at fixed prices, using an interest rate close to the paper's baseline solved economy and normalizing wages. The payroll tax and pension rule are included because they appear in the worker and retiree budget constraints, but the notebook does not solve for the social-security budget balance. This is why we treat $\tau$ as an input rather than as a reproduced equilibrium outcome.
 
-Finally, the notebook also has numerical settings that are not structural parameters: the asset grid, the grid for entrepreneurial capital $k$, value-function-iteration tolerances, damping, and the EGM stabilization option. These settings affect the approximation, but they are not part of the economic calibration. I keep them separate in the code because changing a grid should not be confused with changing the model.
+Finally, the notebook also has numerical settings that are not structural parameters: the asset grid, the grid for entrepreneurial capital $k$ (including the ceiling $k_{\max}=18$), value-function-iteration tolerances, damping, and the EGM stabilization option. These settings affect the approximation, but they are not part of the economic calibration. In particular, $k_{\max}$ can bind for some entrepreneurial states even when the enforcement constraint is the economic borrowing limit. We keep these objects separate in the code because changing a grid should not be confused with changing the model.
 
 \smartbib
 

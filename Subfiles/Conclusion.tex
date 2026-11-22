@@ -6,11 +6,11 @@
 \section{Conclusions}\whenintegrated{\label{conclusion}}
 \whenintegrated{\label{sec:conclusion}}
 
-This project reproduces the theoretical structure of the Cagetti and De Nardi household problem. The main contribution of my reproduction is organizational and computational: it restates the model, separates the worker and entrepreneur branches, solves the baseline fixed-price household problem, and compares the notebook output with the original paper's benchmark moments.
+We solved the fixed-price household problem and checked the saving policies at the upper end of the asset grid.
 
-The reproduction captures the central economic mechanism. Workers solve a standard consumption-saving problem, while entrepreneurs also choose business capital and must satisfy an enforcement constraint. Occupational choice compares the value of these two branches. In the baseline run, the young-only entrepreneur share is 8.25 percent, close to the original paper's 7.5 percent benchmark. This suggests that the branch structure and occupational-choice logic are working in the right range.
+Workers solve a standard consumption-saving problem, while entrepreneurs also choose business capital subject to an enforcement constraint and a discrete capital-grid ceiling. Occupational choice compares the value of these two branches. In the baseline run, the young-only entrepreneur share is 8.33 percent, close to the original paper's 7.5 percent benchmark. The paper's benchmark also includes older households.
 
-The reproduction is much less successful for the wealth distribution. The notebook's young-only wealth Gini is 0.62, compared with 0.80 in the paper's baseline model, and the top 1 percent wealth share is much lower than in the original paper. This is not surprising because the notebook does not yet include the complete demographic stationary distribution, market clearing, full calibration, or the dynastic wealth accumulation channel.
+The notebook's young-only wealth Gini is 0.67, compared with 0.80 in the paper's baseline model, and the top 1 percent wealth share is 14.4 percent rather than 31 percent. These notebook figures are PE diagnostics, not formal bounds on the paper's Table~6 moments. The young-only distribution omits aging and inheritance flows. The household problem includes descendant values, and prices stay fixed throughout the calculation.
 
 The most natural next step would be to replace the young-only stationary distribution check with a full demographic distribution over young workers, young entrepreneurs, old entrepreneurs, and retirees. After that, the model could be closed with market clearing and social-security budget balance, and only then would it be appropriate to compare the reproduced wealth distribution and counterfactuals more directly with the original paper's quantitative tables.
 

@@ -5,12 +5,15 @@ message: >-
   If you use this repository, please cite it using the metadata below. When
   referring to the economic model, cite the preferred citation (journal article).
 type: software
-version: 1.0.0
+# REMARK-in-progress version; align with pyproject.toml and codemeta.json.
+version: 0.2.0
 authors:
   - given-names: Rudan
     family-names: Zheng
     email: rzheng21@jh.edu
+    affiliation: Johns Hopkins University
 repository-code: 'https://github.com/rzheng2112/Cagetti2005tk'
+url: 'https://github.com/rzheng2112/Cagetti2005tk'
 license: Apache-2.0
 keywords:
   - heterogeneous agents
@@ -19,6 +22,7 @@ keywords:
   - occupational choice
   - course project
   - reproducibility
+  - REMARK
 preferred-citation:
   type: article
   authors:

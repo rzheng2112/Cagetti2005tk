@@ -1,3 +1,5 @@
+> Historical HAFiscal template documentation. For the Cagetti2005tk reproduction, see the [project README](../README.md).
+
 # Hidden Appendix: Implementation Details
 
 This document describes the changes made to implement the working "External Label Harvesting" approach for the hidden appendix functionality.

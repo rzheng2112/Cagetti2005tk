@@ -1,7 +1,7 @@
 ---
 # REMARK-style metadata (Econ-ARK ecosystem). This does not assert
 # official listing on econ-ark.org -- this is a REMARK-in-progress at
-# the baseline (standard) tier.
+# the baseline (standard) tier. Editorial / catalog acceptance is pending.
 tier: 2
 github_repo_url: https://github.com/rzheng2112/Cagetti2005tk
 remark-name: Cagetti2005tk
@@ -30,7 +30,7 @@ keywords:
 
 # Cagetti2005tk
 
-This is a **REMARK-in-progress** (baseline / standard tier) that
+This is a **REMARK-in-progress** (documentation target: Tier 2) that
 partially reproduces the theoretical model of
 
 > Cagetti, M. and De Nardi, M. (2006),
@@ -38,10 +38,14 @@ partially reproduces the theoretical model of
 > **Journal of Political Economy**, 114(5), 835--870.
 > [doi:10.1086/508032](https://doi.org/10.1086/508032)
 
+It is **not** an officially accepted Econ-ARK catalog REMARK. Local
+reproduction and documentation are under review; do not treat `tier: 2`
+in the front matter as catalog certification.
+
 ## What a reviewer should read first
 
 1. This file --- scope and expected outputs (below).
-2. `README.md` --- one-command quick start.
+2. `README.md` --- one-command quick start and corrected baseline.
 3. `ARCHITECTURE.md` --- file-by-file map of the repository.
 4. `Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb`
    --- the reproduction notebook itself, cell-level commentary.
@@ -56,10 +60,10 @@ cd Cagetti2005tk
 ```
 
 Bare `./reproduce.sh` runs the minimal reproduction
-(`./reproduce_min.sh`) and, if a TeX Live installation is present,
-rebuilds `Cagetti2005tk.pdf` from the artifacts produced by the
-notebook. The minimal reproduction alone takes roughly 8--12 minutes on
-a recent laptop.
+(`./reproduce_min.sh`) and writes an executed notebook and log under
+`.reproduction/`. Build the report separately with
+`./reproduce.sh --docs main`. The minimal reproduction alone takes
+roughly 8--12 minutes on a recent laptop.
 
 To run only the minimal reproduction:
 
@@ -67,10 +71,9 @@ To run only the minimal reproduction:
 ./reproduce_min.sh
 ```
 
-If `uv` (<https://docs.astral.sh/uv/>) is installed, `reproduce_min.sh`
-will create `.venv` from the pinned `pyproject.toml` / `uv.lock` and
-activate it automatically; otherwise activate an existing environment
-beforehand.
+`uv` (<https://docs.astral.sh/uv/>) is required by `reproduce_min.sh`.
+The runner synchronizes `uv.lock` with `--locked --group jupyter` and
+invokes the project Python explicitly via an isolated Jupyter kernel.
 
 ## What IS reproduced
 
@@ -78,83 +81,87 @@ The notebook
 `Cagetti2005tk_material/cagetti2005_theory_reproduction.ipynb` solves
 the household-side partial-equilibrium Bellman system of the paper:
 
-- **Occupational choice** between worker (status W) and entrepreneur
-  (status E) for the "young" population, with endogenous bankruptcy
-  and collateral enforcement (eq. 5).
-- **Value functions** $V$ (young worker), $W$ (old retiree / old
-  entrepreneur), and $W^r$ (continuation for old retirees), solved by
-  damped Jacobi value-function iteration using the `SolvingMicroDSOPs`
-  Endogenous-Grid-Method stage (`Code/Python/`).
+- **Occupational choice** between worker and entrepreneur for the young
+  population, with endogenous bankruptcy / collateral enforcement
+  (eq. 5), and old entrepreneur / retiree continuations.
+- **Value functions** \(V_w\), \(V_e\), \(V=\max(V_w,V_e)\), \(W_e\),
+  \(W_r\), \(W=\max(W_e,W_r)\), solved by damped value-function
+  iteration (retiree, worker, old entrepreneur, then young entrepreneur) using the SolvingMicroDSOPs Endogenous-Grid-Method stage
+  (`Code/Python/`). An irregular-grid / first-order-endpoint formula
+  builds the EGM consumed function \(c_\delta\) (see notebook
+  `cδ_from_v_grid`).
 - **Calibrated structural parameters** (Table 5 of the paper):
-  $\beta = 0.865$, $\sigma = 1.5$, $\delta = 0.06$, $\nu = 0.88$,
-  $f = 0.75$, $\pi_y = 0.978$, $\pi_o = 0.911$, $\eta = 1.0$.
-- **Income process** from paper Appendix A (5-state discretization
-  of the labour-productivity chain) and the entrepreneurial-ability
-  process $\theta \in \{0, 0.514\}$ (Table 5).
-- **Persisted artifacts** under `Figures/Cagetti2005tk/` and
-  `Tables/Cagetti2005tk/`:
-  - `values_policies_kstar.{pdf,png}` --- value functions and
-    $k^\star(a, \theta)$ policy.
-  - `convergence.{pdf,png}` --- VFI sup-norm history.
-  - `mu_marginal_assets.{pdf,png}` --- stationary asset distribution.
-  - `wealth_lorenz.{pdf,png}` + `wealth_moments.csv`.
-  - `summary.csv` --- headline scalars checked by
-    `scripts/check_reproduction.py`.
-  - `counterfactuals.csv` --- $\eta = 0$ and $(\eta = 0, \beta =
-    0.88)$ branches (Section V of the paper, informal).
+  \(\beta = 0.865\), \(\sigma = 1.5\), \(\delta = 0.06\), \(\nu = 0.88\),
+  \(f = 0.75\), \(\pi_y = 0.978\), \(\pi_o = 0.911\), \(\eta = 1.0\).
+- **Income process** from paper Appendix A (5-state labour productivity)
+  and entrepreneurial ability \(\theta \in \{0, 0.514\}\) (Table 5).
+- **Nine supported regenerated artifacts** under `Figures/Cagetti2005tk/`
+  and `Tables/Cagetti2005tk/`:
+  - `values_policies_kstar.{pdf,png}` --- values and \(k^\star\) policy
+  - `convergence.{pdf,png}` --- VFI residual history
+  - `mu_marginal_assets.{pdf,png}` --- young-only asset distribution
+  - `summary.csv` --- headline scalars
+  - `counterfactuals.csv` --- PE re-solves (see convergence flags)
+  - `wealth_concentration.csv` --- young-only PE wealth diagnostics
+- Historical `wealth_lorenz.{pdf,png}` and `wealth_moments.csv` are
+  preserved but have **no** verified generator in this workflow and are
+  excluded from reproduction checks.
+
+Corrected baseline (local reproduction after the EGM endpoint fix):
+VFI converges in 115 iterations with final sum-norm
+\(\approx 4.75\times10^{-4}\); young-only entrepreneur share
+\(\approx 0.0833\); mean assets \(\approx 4.18\); young-only Gini
+\(\approx 0.671\).
 
 ## What IS NOT reproduced
 
-This is a baseline-tier REMARK-in-progress and explicitly does not
-claim to match the paper's full general-equilibrium stationary
-distribution. The following simplifications are intentional and are
-flagged in-notebook so a reviewer can assess exactly what has and
-has not been done:
+This REMARK-in-progress does **not** claim to match the paper's full
+general-equilibrium stationary distribution:
 
-- **Partial equilibrium.** Prices $(r, w)$ are fixed to the paper's
-  Table 7 baseline; the representative-firm capital-market clearing
-  condition of Appendix B is not iterated. See the "Appendix-B
-  derivation of fixed-price inputs" markdown cell in the notebook
-  for the derivation that *would* close the loop.
+- **Partial equilibrium.** The net interest rate (0.065) comes from Table 7 and the wage is normalized to one; Appendix B capital-market clearing is not iterated.
 - **Young-only stationary kernel.** `iterate_mu_young_kernel` carries
-  mass over the $(\theta, y, a)$ grid with fixed survival probability
-  $\pi_y$; it does not yet carry an explicit four-status dimension
-  $s \in \{YW, YE, OE, OR\}$ with demographic replacement, estate-tax
-  bequest transmission, or old-age asset run-down. Wealth
-  concentration numbers reported in `wealth_concentration.csv` are
-  therefore **lower bounds** on the paper's Table 6 values, and the
-  entrepreneur-share target in `scripts/check_reproduction.py`
-  uses a deliberately wide band.
-- **Estate tax counterfactual.** `estate_tax` is declared in
-  `PaperStructuralParams` but the young-only kernel cannot
-  meaningfully simulate its effect; the Section V "20% estate tax"
-  exercise is not reproduced.
-- **Payroll balance.** $\tau = 0.10$ is set illustratively. The
-  Appendix-B social-security budget
-  $\tau \, w \, L = p \, N_{\text{retirees}}$ is not imposed as a
-  fixed point; a reviewer can recompute the implied $\tau^\star$
-  from `mu_star` once the full-demographic kernel is added.
+  mass over \((\theta, y, a)\) with young staying young; it does not
+  carry \(s \in \{YW, YE, OE, OR\}\) with demographic replacement or
+  inheritance flows. Wealth concentration numbers in
+  `wealth_concentration.csv` are **young-only PE diagnostics**. They are
+  **not** paper Table 6 moments and **not** formal lower bounds on the
+  paper's GE / full-demographic concentration.
+- **Capital-grid ceiling.** Discrete \(k\) search uses `k_max = 18`.
+  Enforcement and this numerical ceiling can both bind; \(k^\star\) is
+  not determined by borrowing constraints alone.
+- **Estate taxation.** The unused `estate_tax` parameter is reserved for a possible extension.
+- **Payroll balance.** \(\tau = 0.10\) is illustrative; Appendix B
+  social-security budget balance is not imposed.
+- **Some PE counterfactuals.** Rows with `converged=False` in
+  `counterfactuals.csv` hit the iteration limit with large residuals.
+  They are numerical diagnostics, not valid comparative statics. The
+  `n_k = 35 (uniform)` row uses a uniform grid on
+  \([10^{-5}, k_{\max}]\), not a denser hybrid grid.
 
 ## Numerical checks
 
 After the notebook runs, `reproduce_min.sh` invokes
-`scripts/check_reproduction.py`, which parses
-`Tables/Cagetti2005tk/summary.csv` and asserts:
+`scripts/check_reproduction.py`, which asserts bands around the
+**corrected** baseline (and fails a regression to the pre-EGM-fix
+wealth statistics):
 
-| metric                        | expected band           |
-|-------------------------------|-------------------------|
-| `ent_share_mu_young_only`     | $[0.02, 0.15]$          |
-| `E_y_under_mu`                | $[0.90, 1.10]$          |
-| `converged`                   | `True`                  |
+| metric                    | expected band (approx.) |
+|---------------------------|-------------------------|
+| `ent_share_mu_young_only` | \([0.05, 0.12]\)        |
+| `mean_assets_mu`          | \([3.80, 4.60]\)        |
+| `E_y_under_mu`            | \([0.90, 1.10]\)        |
+| `final_sum_norm`          | \([0, 0.0005)\)  |
+| `converged`               | `True`                  |
+| wealth `gini`             | \([0.64, 0.72]\)        |
+| wealth `top1` | [0.14, 0.15] |
+| wealth `top5` | [0.36, 0.38] |
 
-The bands are intentionally wide --- they catch silent regressions
-(e.g. accidentally disabling the occupational-choice branch) without
-claiming an exact match to the paper.
+All counterfactual residuals must be finite and nonnegative. Converged rows must fall below 0.0005;
+nonconvergence is allowed and is **not** required as a success condition.
 
 ## Code provenance
 
 The three files under `Code/Python/` (`solution.py`, `resources.py`,
-`stages/cons_noshocks.py`) are vendored verbatim from
+`stages/cons_noshocks.py`) are vendored from
 <https://github.com/llorracc/SolvingMicroDSOPs> at a pinned revision.
-See `NOTICES.md` and `scripts/revendor_smd.sh` for the refresh
-workflow.
+See `NOTICES.md` and `scripts/revendor_smd.sh` for the refresh workflow.

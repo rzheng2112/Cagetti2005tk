@@ -1,3 +1,5 @@
+> Earlier AI-assisted review (April 2026). Some numerical results and implementation details below have since changed. For the verified scope and results, see the [README](../README.md), [REMARK description](../REMARK.md), and [generated tables](../Tables/Cagetti2005tk/).
+
 # REMARK review and improvement suggestions
 _Exported on 4/22/2026 at 22:24:26 EDT from Cursor (3.1.17)_
 

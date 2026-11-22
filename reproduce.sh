@@ -53,16 +53,30 @@ build_docs_main() {
         exit 1
     fi
 
+    # Portable BibTeX / style search paths (econark.bst lives in the repo).
+    export BSTINPUTS="${REPO_ROOT}/@resources/texlive/texmf-local/bibtex/bst/:${BSTINPUTS:-}"
+    export BIBINPUTS="${REPO_ROOT}:${REPO_ROOT}/@resources/texlive/texmf-local/bibtex/bib/:${BIBINPUTS:-}"
+    export TEXINPUTS="${REPO_ROOT}/@resources/texlive/texmf-local/tex/latex//:${REPO_ROOT}/@local/:${TEXINPUTS:-}"
+
     echo "Building Cagetti2005tk.pdf via pdflatex / bibtex / pdflatex x2 ..."
+    # System bibtex + BSTINPUTS (set above). Force (-g) clears sticky latexmk
+    # state after a prior bibtex failure ("Nothing to do" + previous error).
+    local pdf_base="${tex%.tex}"
     if command -v latexmk >/dev/null 2>&1; then
-        latexmk -pdf -interaction=nonstopmode "$tex"
+        latexmk -g -pdf -interaction=nonstopmode \
+            -e '$bibtex = "bibtex %O %S";' \
+            "$tex"
+        if [[ ! -s "${pdf_base}.bbl" ]]; then
+            echo "ERROR: ${pdf_base}.bbl missing or empty after latexmk." >&2
+            exit 1
+        fi
     else
         pdflatex -interaction=nonstopmode "$tex"
-        bibtex   Cagetti2005tk || true
+        bibtex   "$pdf_base" || true
         pdflatex -interaction=nonstopmode "$tex"
         pdflatex -interaction=nonstopmode "$tex"
     fi
-    echo "Done. Output: Cagetti2005tk.pdf"
+    echo "Done. Output: ${pdf_base}.pdf"
 }
 
 case "${1:-}" in
